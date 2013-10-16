@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/code/!svn/ver/10979/trunk/acs/src/spring
+END
+applicationContext-web.xml
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/code/!svn/ver/10979/trunk/acs/src/spring/applicationContext-web.xml
+END
+applicationContext-service.xml
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/code/!svn/ver/1072/trunk/acs/src/spring/applicationContext-service.xml
+END
+applicationContext-cache.xml
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/code/!svn/ver/1253/trunk/acs/src/spring/applicationContext-cache.xml
+END
+applicationContext-dao.xml
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/code/!svn/ver/10979/trunk/acs/src/spring/applicationContext-dao.xml
+END
+hessian-remoting.xml
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/code/!svn/ver/2805/trunk/acs/src/spring/hessian-remoting.xml
+END
+applicationContext-resource.xml
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/code/!svn/ver/6037/trunk/acs/src/spring/applicationContext-resource.xml
+END

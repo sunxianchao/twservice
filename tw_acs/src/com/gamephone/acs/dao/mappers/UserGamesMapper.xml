@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gamephone.acs.dao.UserGamesMapper">
+
+	<resultMap type="UserGames" id="userGamesResultMap">
+		<id property="id" column="ID" />
+		<result property="userId" column="USER_ID" />
+		<result property="gameId" column="GAME_ID" />
+		<result property="gameRoleId" column="GAME_ROLE_ID" />
+		<result property="lastLoginDate" column="LAST_LOGIN_DATE" />
+		<result property="loginCNT" column="LOGIN_CNT" />
+		<result property="payCNT" column="PAY_CNT" />
+		<result property="amount" column="LAST_PAY_AMOUNT" />
+		<result property="payTotalAmount" column="PAY_TOTAL_AMOUNT" />
+		<result property="lastIP" column="LAST_IP" />
+		<result property="lastUA" column="LAST_UA" />
+		<result property="imei" column="UA_IMEI" />
+		<result property="macAddress" column="MAC_ADDRESS" />
+	</resultMap>
+	
+	<select id="getGamesByUserId" parameterType="Integer" resultType="UserGames" resultMap="userGamesResultMap">
+		select * from USER_GAME u where u.USER_ID=#{userId}
+	</select>
+
+	<select id="getUserGamesByImei" parameterType="String" resultType="UserGames" resultMap="userGamesResultMap">
+		select * from USER_GAME u where u.UA_IMEI=#{imei} order by LAST_LOGIN_DATE desc limit 1
+	</select>
+	
+	<select id="getUserGamesById" parameterType="Integer" resultType="UserGames" resultMap="userGamesResultMap">
+		select * from USER_GAME u where u.ID=#{id}
+	</select>
+	
+	<select id="getUserLoginGame" resultType="UserGames" resultMap="userGamesResultMap">
+		select * from USER_GAME u where u.USER_ID=#{userId} and GAME_ID=#{gameId} and SERVER_ID=#{serverId}
+	</select>
+	
+	
+	<insert id="createUserGames" parameterType="UserGames" useGeneratedKeys="true" keyProperty="id">
+		insert into `USER_GAME`
+		(
+		  `USER_ID`,
+		  `GAME_ID`,
+		  `GAME_ROLE_ID`,
+		  `LAST_LOGIN_DATE`,
+		  `LAST_IP`,
+		  `LAST_UA`,
+		  `UA_IMEI`,
+		  `MAC_ADDRESS`
+		) 
+		VALUES (
+		  #{userId},
+		  #{gameId},
+		  #{gameRoleId},
+		  #{lastLoginDate},
+		  #{lastIP},
+		  #{lastUA},
+		  #{imei},
+		  #{macAddress}
+		)
+	</insert>
+	
+	<update id="updateUserGameById">
+	update USER_GAME u set 
+	<if test="userId != null and userId != 0">
+		u.USER_ID=#{userId},
+	</if>
+	<if test="gameRoleId != null and gameRoleId != 0">
+		u.GAME_ROLE_ID=#{gameRoleId},
+	</if>
+	
+	<if test="lastLoginDate != null">
+		u.LAST_LOGIN_DATE=#{lastLoginDate}, u.LOGIN_CNT=LOGIN_CNT+1,
+	</if>
+	<if test="amount != null and amount != 0">
+		u.amount=#{amount}, u.PAY_TOTAL_AMOUNT=PAY_TOTAL_AMOUN+ #{amount}, and PAY_CNT=PAY_CNT+1,
+	</if>
+	u.ID=#{id} where u.ID=#{id}
+	</update>
+</mapper>

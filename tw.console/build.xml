@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="rebuild" name="twconsole">
+  <property environment="env"/>
+  <property name="dist" value="dist"/>
+  <property name="build" value="build"/>
+  <property name="src" value="src"/>
+  <property name="web" value="console"/>
+  <property name="jdk.home" value="${env.JAVA_HOME}"/>
+  <property name="tomcat.home" value="${env.CATALINA_HOME}"/>  
+  <property name="tw.home" value="${env.TW.COMMON_HOME}"/>
+
+<path id="project.class.path">
+	<fileset dir="${java.home}">
+      <include name="**/*.jar" />
+    </fileset>
+  	<fileset dir="${tomcat.home}/lib">
+  	  <include name="**/*.jar" />
+  	</fileset>
+  	<pathelement location="${tw.home}/lib/activation-1.1.jar"/>
+    <pathelement location="${tw.home}/lib/cglib-nodep-2.1_3.jar"/>
+    <pathelement location="${tw.home}/lib/com.springsource.org.aopalliance-1.0.0.jar"/>
+    <pathelement location="${tw.home}/lib/com.springsource.org.apache.log4j-1.2.15.jar"/>
+    <pathelement location="${tw.home}/lib/com.springsource.org.aspectj.tools-1.6.6.RELEASE.jar"/>
+    <pathelement location="${tw.home}/lib/commons-beanutils-1.7.0.jar"/>
+    <pathelement location="${tw.home}/lib/commons-cli-1.2.jar"/>
+    <pathelement location="${tw.home}/lib/commons-codec-1.4.jar"/>
+    <pathelement location="${tw.home}/lib/commons-collections-3.0.jar"/>
+    <pathelement location="${tw.home}/lib/commons-dbcp-1.4.jar"/>
+    <pathelement location="${tw.home}/lib/commons-fileupload-1.2.1.jar"/>
+    <pathelement location="${tw.home}/lib/commons-httpclient-3.1.jar"/>
+    <pathelement location="${tw.home}/lib/commons-io-1.3.2.jar"/>
+    <pathelement location="${tw.home}/lib/commons-lang-2.3.jar"/>
+    <pathelement location="${tw.home}/lib/commons-logging-1.1.1.jar"/>
+    <pathelement location="${tw.home}/lib/commons-pool-1.5.5.jar"/>
+    <pathelement location="${tw.home}/lib/httpclient-4.1.2.jar"/>
+    <pathelement location="${tw.home}/lib/httpclient-cache-4.1.2.jar"/>
+    <pathelement location="${tw.home}/lib/httpcore-4.1.2.jar"/>
+    <pathelement location="${tw.home}/lib/httpmime-4.1.2.jar"/>
+    <pathelement location="${tw.home}/lib/ibatis-2.3.4.726.jar"/>
+    <pathelement location="${tw.home}/lib/jackson-all-1.9.10.jar"/>
+    <pathelement location="${tw.home}/lib/jettison-1.0.1.jar"/>
+    <pathelement location="${tw.home}/lib/jstl-1.2.jar"/>
+    <pathelement location="${tw.home}/lib/jstl-impl-1.2.jar"/>
+    <pathelement location="${tw.home}/lib/mail-1.4.jar"/>
+    <pathelement location="${tw.home}/lib/mysql-connector-java-5.1.13-bin.jar"/>
+    <pathelement location="${tw.home}/lib/nuxeo-common-1.0.jar"/>
+    <pathelement location="${tw.home}/lib/org.springframework.aop-3.0.5.RELEASE.jar"/>
+    <pathelement location="${tw.home}/lib/org.springframework.asm-3.0.5.RELEASE.jar"/>
+    <pathelement location="${tw.home}/lib/org.springframework.aspects-3.0.5.RELEASE.jar"/>
+    <pathelement location="${tw.home}/lib/org.springframework.beans-3.0.5.RELEASE.jar"/>
+    <pathelement location="${tw.home}/lib/org.springframework.context.support-3.0.5.RELEASE.jar"/>
+    <pathelement location="${tw.home}/lib/org.springframework.context-3.0.5.RELEASE.jar"/>
+    <pathelement location="${tw.home}/lib/org.springframework.core-3.0.5.RELEASE.jar"/>
+    <pathelement location="${tw.home}/lib/org.springframework.expression-3.0.5.RELEASE.jar"/>
+    <pathelement location="${tw.home}/lib/org.springframework.jdbc-3.0.5.RELEASE.jar"/>
+    <pathelement location="${tw.home}/lib/org.springframework.jms-3.0.5.RELEASE.jar"/>
+    <pathelement location="${tw.home}/lib/org.springframework.orm-3.0.5.RELEASE.jar"/>
+    <pathelement location="${tw.home}/lib/org.springframework.oxm-3.0.5.RELEASE.jar"/>
+    <pathelement location="${tw.home}/lib/org.springframework.test-3.0.5.RELEASE.jar"/>
+    <pathelement location="${tw.home}/lib/org.springframework.transaction-3.0.5.RELEASE.jar"/>
+    <pathelement location="${tw.home}/lib/org.springframework.web.servlet-3.0.5.RELEASE.jar"/>
+    <pathelement location="${tw.home}/lib/org.springframework.web-3.0.5.RELEASE.jar"/>
+    <pathelement location="${tw.home}/lib/xstream-1.3.jar"/>  
+    <pathelement location="${tw.home}/lib/jdom.jar"/>    
+	<pathelement location="${tw.home}/dist/tw-common.jar"/>   
+  </path>
+
+  <target depends="init" name="javacompile" description="javacompile target for yun pay classes">
+    <javac destdir="${build}" debug="true" source="1.6" target="1.6" encoding="utf-8">
+    	<classpath refid= "project.class.path"/> 
+    	<src path="${src}"/>
+    	<include name="**/*.java"/>
+    </javac>
+  </target>
+
+  <target name="zipclasses">
+    <jar compress="true" destfile="${dist}/${ant.project.name}.jar">
+      <fileset dir="${build}">
+        <include name="**\**.xml"/>
+        <include name="**\**.txt"/>
+        <include name="**\**.class"/>
+      </fileset>
+    </jar>
+  </target>
+
+  <target depends="zipclasses" name="WebModuleNode">
+    <copy todir="${web}/WEB-INF/classes" overwrite="true">
+      <fileset dir="${src}">
+        <include name="**/*.xml" />
+        <include name="**/*.txt" />
+        <include name="**/*.properties" />
+        <include name="**/*.cer" />
+        <exclude name="**/svn/**"/>
+      </fileset>
+    </copy>
+    <war compress="true" destfile="${dist}/${ant.project.name}.war" webxml="${web}/WEB-INF/web.xml">
+      <zipfileset dir="${web}">
+        <include name="**/*.jsp"/>
+        <include name="**/*.html"/>
+        <include name="**/*.properties"/>
+        <include name="**/*.xml"/>
+        <include name="**/*.js"/>
+        <include name="**/*.gif"/>
+        <include name="**/*.jpg"/>
+        <include name="**/*.png"/>
+        <include name="**/*.css"/>
+        <include name="**/*.tld"/>
+        <include name="**/*.txt"/>
+      	<include name="**/*.cer"/>
+      </zipfileset>
+        
+      <lib dir="${dist}">
+         <include name="${ant.project.name}.jar"/>
+      </lib>
+      <lib dir="${tw.home}/lib">
+        <include name="**/*.jar"/>
+      </lib>
+      <lib dir="${tw.home}/dist">
+    	<include name="**/*.jar"/>
+      </lib>
+    </war>
+  </target>
+  
+  <target name="cleanup">
+    <delete file="${ant.project.name}.war"/>
+    <delete failonerror="false" includeemptydirs="true">
+      <fileset dir="${dist}"/>
+      <fileset dir="${build}"/>
+      <fileset dir="${web}/WEB-INF/classes"/>
+    </delete>
+  </target>
+
+  <target depends="javacompile,WebModuleNode" name="make"/>
+  
+  <target depends="cleanup,make" name="rebuild">
+  </target>
+  
+  <target name="init">
+    <property environment="env"/>
+    <mkdir dir="${dist}"/>
+    <mkdir dir="${build}"/>
+  </target>
+</project>

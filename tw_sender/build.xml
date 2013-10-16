@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="jar" name="tw_pay_sender">
+  <property environment="env"/>
+  <property name="jdk.home" value="${env.JAVA_HOME}"/>
+  <property name="spring.home" value="${env.SPRING_HOME}"/>
+  <property name="spring3.home" value="${env.SPRING3_HOME}"/>
+  <property name="log4j.home" value="${env.LOG4J_HOME}"/>
+  <property name="mysql.home" value="${env.MYSQL_HOME}"/>
+  <property name="ibatis.home" value="${env.IBATIS_HOME}"/>
+  <property name="json.home" value="${env.JSON_HOME}"/>
+  <property name="tw.home" value="${env.TW.COMMON_HOME}"/>
+  <property name="JavaMemcachedClient.Home" value="${env.JAVA_MEMCACHED_CLIENT_HOME}"/>
+    
+  <property name="dest" value="dist" />
+  <property name="src" value="src"/>
+  <property name="bin" value="tmp.classes"/>
+
+  <path id="project.class.path">
+    <pathelement location="${dest}"/>
+    <fileset dir="${java.home}">
+      <include name="**/*.jar" />
+    </fileset>
+    
+    <pathelement location="${ibatis.home}/ibatis-2.3.4.726.jar"/>
+    <pathelement location="${mysql.home}/mysql-connector-java-5.0.4-bin.jar"/>
+    <pathelement location="${log4j.home}/log4j-1.2.8.jar"/>
+    <pathelement location="${json.home}/jackson-all-1.9.1.jar"/>
+  	<pathelement location="${spring.home}/lib/jakarta-commons/commons-lang.jar"/>
+    <pathelement location="${spring3.home}/dist/org.springframework.core-3.0.5.RELEASE.jar"/>
+    <pathelement location="${spring3.home}/dist/org.springframework.context-3.0.5.RELEASE.jar"/>
+    <pathelement location="${spring3.home}/dist/org.springframework.context.support-3.0.5.RELEASE.jar"/>
+    <pathelement location="${spring3.home}/dist/org.springframework.orm-3.0.5.RELEASE.jar"/>
+    <pathelement location="${spring3.home}/dist/org.springframework.transaction-3.0.5.RELEASE.jar"/>
+    <pathelement location="${spring3.home}/dist/org.springframework.jdbc-3.0.5.RELEASE.jar"/>
+    <pathelement location="${spring3.home}/dist/org.springframework.beans-3.0.5.RELEASE.jar"/>
+    <pathelement location="${JavaMemcachedClient.Home}/memcached-2.5.jar"/>
+    <pathelement location="${tw.home}/dist/tw-common.jar"/>
+  </path>
+  
+  <target name="jar" depends="compile">
+    <copy todir="${bin}" overwrite="true">
+      <fileset dir="${src}">
+        <include name="**/*.xml" />
+        <include name="**/*.properties" />
+        <exclude name="**/cvs/**" />
+      </fileset>
+    </copy>
+    <copy todir="${dest}" overwrite="true">
+      <fileset dir="${log4j.home}">
+        <include name="log4j-1.2.8.jar"/>
+      </fileset>
+    	
+      <fileset dir="${spring.home}/lib/jakarta-commons/">
+        <include name="commons-logging.jar"/>
+        <include name="commons-dbcp.jar"/>
+        <include name="commons-pool.jar"/>
+        <include name="commons-lang.jar"/>
+      </fileset>
+      
+      <fileset dir="${spring.home}/lib/aopalliance">
+        <include name="aopalliance.jar"/>
+      </fileset>
+
+      <fileset dir="${JavaMemcachedClient.Home}">
+           <include name="memcached-2.5.jar"/>
+      </fileset>
+    	
+      <fileset dir="${spring.home}/lib/aspectj">
+        <include name="aspectjrt.jar"/>
+        <include name="aspectjweaver.jar"/>
+      </fileset>
+      <fileset dir="${spring.home}/lib/cglib">
+        <include name="cglib-nodep-2.1_3.jar"/>
+      </fileset>
+      
+      <fileset dir="${spring3.home}/dist/">
+        <include name="org.springframework.core-3.0.5.RELEASE.jar"/>
+        <include name="org.springframework.context-3.0.5.RELEASE.jar"/>
+        <include name="org.springframework.context.support-3.0.5.RELEASE.jar"/>
+        <include name="org.springframework.orm-3.0.5.RELEASE.jar"/>
+        <include name="org.springframework.transaction-3.0.5.RELEASE.jar"/>
+        <include name="org.springframework.jdbc-3.0.5.RELEASE.jar"/>
+        <include name="org.springframework.beans-3.0.5.RELEASE.jar"/>
+        <include name="org.springframework.asm-3.0.5.RELEASE.jar"/>
+        <include name="org.springframework.expression-3.0.5.RELEASE.jar"/>
+        <include name="org.springframework.aop-3.0.5.RELEASE.jar"/>
+        <include name="org.springframework.aspects-3.0.5.RELEASE.jar"/>
+      </fileset>
+      
+      <fileset dir="${ibatis.home}/">
+        <include name="ibatis-2.3.4.726.jar"/>
+      </fileset>
+
+    	<fileset dir="${mysql.home}">
+        <include name="mysql-connector-java-5.0.4-bin.jar"/>
+      </fileset>
+      
+      <fileset dir="${tw.home}/dist">
+        <include name="tw-common.jar"/>
+      </fileset>
+    	
+      <fileset dir="${json.home}">
+    	 <include name="jackson-all-1.9.1.jar"/>
+      </fileset>
+    </copy>
+    
+    <pathconvert property="manifest.classpath" pathsep=" ">
+      <path>
+        <fileset dir="${dest}">
+          <include name="**/*.jar" />
+        </fileset>
+      </path>
+      <mapper>
+        <chainedmapper>
+         <flattenmapper/>
+         <globmapper from="*.jar" to="*.jar"/>
+        </chainedmapper>
+      </mapper>
+    </pathconvert>
+    <jar destfile="${dest}/${ant.project.name}.jar" basedir="${bin}">
+      <manifest>
+        <attribute name="Main-Class" value="com.gamephone.sender.ui.console.Main"/>
+          <attribute name="Class-Path" value="${manifest.classpath}" />
+      </manifest>
+    </jar>    
+  </target>
+
+  <target name="compile" depends="init">
+  	<javac destdir="${bin}" debug="true" source="1.6" target="1.6" encoding="utf-8">
+    	<src path="${src}"/>
+    	<include name="**/*.java"/>
+    	<classpath refid="project.class.path"/>
+    </javac>
+  </target>
+
+  <target name="init" depends="cleanup">
+    <mkdir dir="${dest}"/>
+    <mkdir dir="${bin}"/>
+    
+    <property environment="env"/>
+    <echo>If any error comes up, Please firstly check the following system environment variables:</echo>
+    <echo>JAVA_HOME - ${env.JAVA_HOME}</echo>
+    <echo>SPRING_HOME - ${env.SPRING_HOME}</echo>
+    <echo>SPRING3_HOME - ${env.SPRING3_HOME}</echo>
+    <echo>LOG4J_HOME - ${env.LOG4J_HOME}</echo>
+    <echo>MYSQL_HOME - ${env.MYSQL_HOME}</echo>
+    <echo>IBATIS_HOME - ${env.IBATIS_HOME}</echo>
+    <echo>Please make sure all the variables in list point to a proper directory containing the required JAR file.</echo>
+    <mkdir dir="${dest}" />
+  </target>
+
+  <target name="cleanup">
+    <delete file="${dest}/tw-common.jar" failonerror="false"/>
+    <delete includeemptydirs="true" failonerror="false">
+      <fileset dir="${dest}"/>
+    </delete>
+    <delete includeemptydirs="true" failonerror="false">
+      <fileset dir="${bin}"/>
+    </delete>
+  </target>
+</project>

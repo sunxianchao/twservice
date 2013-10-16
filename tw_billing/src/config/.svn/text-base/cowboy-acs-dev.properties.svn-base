@@ -1,0 +1,33 @@
+#jdbc.driverClassName=com.mysql.jdbc.Driver
+#jdbc.url=jdbc:mysql://192.168.0.9:3306/testperfom?useUnicode=true&characterEncoding=UTF-8
+#jdbc.username=root
+#jdbc.password=ncpwd
+jdbc.driverClassName=com.mysql.jdbc.Driver
+#mysql for acs
+jdbc.url=jdbc:mysql://192.168.0.53:3306/acs?useUnicode=true&characterEncoding=UTF-8
+jdbc.username=acs
+jdbc.password=acs
+
+#mysql for cowboy 2.0
+jdbc.cowboy.url=jdbc:mysql://192.168.0.9:3306/cowboy?useUnicode=true&characterEncoding=UTF-8
+jdbc.cowboy.username=cowboy
+jdbc.cowboy.password=data13:00base
+
+#mysql for pay
+jdbc.pay.url=jdbc:mysql://192.168.0.53:3306/pay?useUnicode=true&characterEncoding=UTF-8
+jdbc.pay.username=pay
+jdbc.pay.password=pay
+
+#mysql for live
+jdbc.live.url=jdbc:mysql://192.168.0.53:3306/live?useUnicode=true&characterEncoding=UTF-8
+jdbc.live.username=live
+jdbc.live.password=live
+
+#mongo address
+all.mongo.address=192.168.0.58:27017
+
+# reset the expire time for the login user.
+redis.login.user.expire=10000
+
+# used to indicate that this properties is which profile
+profile=dev

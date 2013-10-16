@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="SEND">
+
+  
+  <typeAlias alias="SendLogTO" type="com.gamephone.common.to.SendLogTO" />
+  
+  
+  <resultMap id="SendLogTO" class="SendLogTO">
+    <result column="ID" jdbcType="varchar" javaType="java.lang.String" property="id" />
+    <result column="ORDER_ID" jdbcType="int" javaType="java.lang.Integer" property="orderId" />
+    <result column="POST_URL" jdbcType="varchar" javaType="java.lang.String" property="postUrl" />
+    <result column="PARAMS" jdbcType="varchar" javaType="java.lang.String" property="params"/>
+    <result column="LAST_TIME" jdbcType="varchar" javaType="java.lang.String" property="lastSendTime"/>
+    <result column="TIMES" jdbcType="int" javaType="java.lang.Long" property="sendTimes" />
+    <result column="ORDER_FROM" jdbcType="int" javaType="java.lang.Integer" property="orderFrom" />
+  </resultMap>
+    
+  <insert id="addSendQueueTO" parameterClass="SendLogTO">
+    insert into SEND_QUEUE (ORDER_ID, POST_URL, LAST_TIME, TIMES, ORDER_FROM)
+    values (#orderId#, #postUrl#, now(), 0, #orderFrom#)
+  </insert>
+</sqlMap>

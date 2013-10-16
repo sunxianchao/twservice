@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<typeAliases>
+		<typeAlias alias="User" type="com.gamephone.acs.model.User" />
+		<typeAlias alias="Channel" type="com.gamephone.acs.model.Channel" />
+		<typeAlias alias="UserGames" type="com.gamephone.acs.model.UserGames" />
+		<typeAlias alias="Game" type="com.gamephone.common.to.GameTO" />
+		<typeAlias alias="ServerLog" type="com.gamephone.acs.model.ServerLog" />
+		<typeAlias alias="GameRole" type="com.gamephone.acs.model.GameRole" />
+	</typeAliases>
+	<mappers>
+		<mapper resource="com/gamephone/acs/dao/mappers/UserMapper.xml" />
+		<mapper resource="com/gamephone/acs/dao/mappers/ChannelMapper.xml" />
+		<mapper resource="com/gamephone/acs/dao/mappers/UserGamesMapper.xml" />
+		<mapper resource="com/gamephone/acs/dao/mappers/GameMapper.xml" />
+		<mapper resource="com/gamephone/acs/dao/mappers/GameRoleMapper.xml" />
+		<mapper resource="com/gamephone/acs/dao/mappers/ServerLogMapper.xml" />
+	</mappers>
+</configuration>		

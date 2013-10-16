@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gamephone.billing.dao.SendMapper">
+  
+  <resultMap id="sendLogResultMap" type="SendQueue">
+    <result column="ID" property="id" />
+    <result column="ORDER_ID" property="orderId" />
+    <result column="POST_URL" property="postUrl" />
+    <result column="PARAMS" property="params"/>
+    <result column="LAST_TIME" property="lastSendTime"/>
+    <result column="TIMES" property="sendTimes" />
+    <result column="ORDER_FROM" property="orderFrom" />
+  </resultMap>
+    
+  <insert id="createSendQueue" parameterType="SendQueue">
+    insert into SEND_QUEUE (ORDER_ID, POST_URL, LAST_TIME, TIMES, ORDER_FROM)
+    values (#{orderId}, #{postUrl}, now(), 0, #{orderFrom})
+  </insert>
+</mapper>

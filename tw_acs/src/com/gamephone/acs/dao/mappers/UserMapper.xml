@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gamephone.acs.dao.UserMapper">
+
+	<resultMap type="User" id="userResultMap">
+		<id property="id" column="ID" />
+		<result property="tid" column="TID" />
+		<result property="userName" column="USER_NAME" />
+		<result property="nickName" column="NICKNAME" />
+		<result property="email" column="EMAIL" />
+		<result property="phoneNum" column="PHONE_NUM" />
+		<result property="password" column="PASSWORD" />
+		<result property="realName" column="REAL_NAME" />
+		<result property="idCardNo" column="ID_CARD_NO" />
+		<result property="referral" column="REFERRAL" />
+		<result property="channelId" column="CHANNEL_ID" />
+		<result property="status" column="STATUS" />
+		<result property="gender" column="GENDER" />
+		<result property="birthday" column="BIRTHDAY" />
+		<result property="signUpDate" column="SIGN_UP_DATE" />
+		<result property="avatar" column="AVATAR" />
+		<result property="userType" column="USER_TYPE" />
+		<result property="registerGameId" column="REGISTER_GAME_ID" />
+	</resultMap>
+	
+	<select id="getUserByUserName" parameterType="String" resultType="User" resultMap="userResultMap">
+		select * from USER u where u.USER_NAME=#{userName}
+	</select>
+	
+	<select id="getUserByEmail" parameterType="String" resultType="User" resultMap="userResultMap">
+		select * from USER u where u.EMAIL=#{email}
+	</select>
+	
+	<select id="getThirdUser" resultType="User" resultMap="userResultMap">
+		select * from USER u where USER_TYPE=#{userType} and TID=#{tid}
+	</select>
+	
+	<select id="checkLogin" parameterType="java.util.Map" resultType="User" resultMap="userResultMap">
+		select * from USER u where u.USER_NAME=#{userName} and u.PASSWORD=#{password}
+	</select>
+	
+	<insert id="createUser" parameterType="User"  useGeneratedKeys="true" keyProperty="id">
+		insert into `USER`
+		(
+		  `TID`,
+		  `USER_NAME`,
+		  `EMAIL`,
+		  `PHONE_NUM`,
+		  `PASSWORD`,
+		  `REAL_NAME`,
+		  `ID_CARD_NO`,
+		  `REFERRAL`,
+		  `CHANNEL_ID`,
+		  `STATUS`,
+		  `GENDER`,
+		  `BIRTHDAY`,
+		  `SIGN_UP_DATE`,
+		  `AVATAR`,
+		  `REGISTER_GAME_ID`,
+		  `USER_TYPE`
+		) 
+		VALUES (
+		  #{tid},
+		  #{userName},
+		  #{email},
+		  #{phoneNum},
+		  #{password},
+		  #{realName},
+		  #{idCardNo},
+		  #{referral},
+		  #{channelId},
+		  #{status},
+		  #{gender},
+		  #{birthday},
+		  now(),
+		  #{avatar},
+		  #{registerGameId},
+		  #{userType}
+		)
+	</insert>
+	
+	<select id="findPasword" parameterType="hashmap" resultType="User" resultMap="userResultMap">
+		select * from USER where USER_NAME=#{userName} and EMAIL=#{email}
+	</select>
+	
+	<update id="updateUserPassword" parameterType="hashmap">
+		update USER set password=#{newPassword} where id=#{id}
+	</update>
+</mapper>

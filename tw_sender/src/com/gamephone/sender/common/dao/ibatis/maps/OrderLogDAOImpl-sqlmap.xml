@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="ORDER" >
+<typeAlias alias="OrderTO" type="com.gamephone.common.to.OrderTO"/>
+  
+  <resultMap id="OrderTO" class="OrderTO">
+    <result column="ID" jdbcType="int" javaType="java.lang.Integer" property="id" />
+    <result column="CP_ID" jdbcType="int" javaType="java.lang.Integer" property="cpId" />
+    <result column="USER_ID" jdbcType="varchar" javaType="java.lang.String" property="userId" />
+    <result column="GAME_ID" jdbcType="int" javaType="java.lang.Integer" property="gameId" />
+    <result column="GAME_SERVER_ID" jdbcType="int" javaType="java.lang.Integer" property="gameServerId"/>
+    <result column="AMOUNT" jdbcType="int" javaType="java.lang.Integer" property="amount" />    
+    <result column="PAY_SUCCESS" jdbcType="smallint" javaType="java.lang.Integer" property="paySuccess" />
+    <result column="ORDER_ID" jdbcType="varchar" javaType="java.lang.String" property="orderId"/>
+    <result column="TRADE_NO" jdbcType="varchar" javaType="java.lang.String" property="tradeNo"/>
+    <result column="RESULT_CODE" jdbcType="varchar" javaType="java.lang.String" property="resultCode"/>
+    <result column="RESULT_MSG" jdbcType="varchar" javaType="java.lang.String" property="resultMsg"/>
+    <result column="RESULT_DATE" jdbcType="datetime" javaType="java.util.Date" property="resultDate" />
+    <result column="CREATED_DATE" jdbcType="datetime" javaType="java.util.Date" property="createdDate" />
+    <result column="CARD_NO" jdbcType="varchar" javaType="java.lang.String" property="cardNo"/>
+    <result column="CARD_PWD" jdbcType="varchar" javaType="java.lang.String" property="cardPwd"/>
+    <result column="AUTH_CODE" jdbcType="varchar" javaType="java.lang.String" property="authCode"/>
+    <result column="PRODUCT_ID" jdbcType="varchar" javaType="java.lang.String" property="productId"/>
+    <result column="TYPE" jdbcType="smallint" javaType="java.lang.Integer" property="type"/>
+    <result column="PRO_NO" jdbcType="varchar" javaType="java.lang.String" property="proNo"/>
+    <result column="EXT_INFO" jdbcType="varchar" javaType="java.lang.String" property="extInfo"/>
+  </resultMap>
+  
+    <select id="getOrderById" resultMap="OrderTO" parameterClass="java.lang.Integer">
+    select  ID,  USER_ID,  CP_ID,  GAME_ID,  GAME_SERVER_ID,  CARD_NO,  CARD_PWD,  AMOUNT,  PAY_SUCCESS, ORDER_ID,
+  			TRADE_NO,  RESULT_CODE,  RESULT_MSG,  RESULT_DATE,  CREATED_DATE,  EXT_INFO,  AUTH_CODE,  TYPE,  PRODUCT_ID, PRO_NO
+    from ORDER_LOG where ID = #id# and PAY_SUCCESS=1
+  </select>
+  
+   <update id="updateNoticeStatus" parameterClass="java.util.Map">
+    update ORDER_LOG set  NOTICE_CP_RES = #noticeStatus#, NOTICE_CP_TIME = now()
+    where ID = #orderId#
+  </update>
+</sqlMap>

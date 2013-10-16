@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="PAY">
+  <typeAlias alias="PayChannelTO" type="com.gamephone.common.to.PayChannelTO"/>
+  
+  <resultMap id="PayChannelTO" class="PayChannelTO">
+    <result column="ID" jdbcType="int" javaType="java.lang.Integer" property="id" />
+    <result column="GAME_ID" jdbcType="int" javaType="java.lang.Integer" property="gameId"/>
+    <result column="PAY_NAME" jdbcType="varchar" javaType="java.lang.String" property="payName" />
+    <result column="PAY_SERVER_ID" jdbcType="varchar" javaType="java.lang.String" property="serverId"  nullValue=""/>
+    <result column="PAY_SERVICE_NAME" jdbcType="varchar" javaType="java.lang.String" property="serverName" nullValue=""/>
+    <result column="PAY_AMOUNT" jdbcType="int" javaType="java.lang.Integer" property="amount" />
+    <result column="PID" jdbcType="int" javaType="java.lang.Integer" property="pid"/>
+    <result column="IS_LOCAL" jdbcType="int" javaType="java.lang.Integer" property="isLocal" />
+    <result column="SEQ" jdbcType="int" javaType="java.lang.Integer" property="order" />
+    <result column="STATUS" jdbcType="int" javaType="java.lang.Integer" property="status" />
+  </resultMap>
+  
+  <sql id="select-from">
+  	SELECT ID,  GAME_ID, PAY_NAME,  PAY_SERVER_ID,  PAY_SERVICE_NAME,  PAY_AMOUNT,  PID,  IS_LOCAL,  SEQ,  STATUS from PAY_CHANNEL  
+  </sql>
+  <select id="getPayChannels" resultMap="PayChannelTO" resultClass="PayChannelTO" parameterClass="java.util.HashMap">
+      <include refid="select-from"/>
+      where STATUS = 1 and PID=0 order by SEQ
+  </select>
+  
+  <select id="getPayServices" resultMap="PayChannelTO" resultClass="PayChannelTO" parameterClass="java.util.HashMap">
+  	<include refid="select-from"/>
+  	 where STATUS = 1 and PID !=0 order by ID
+  </select>
+</sqlMap>

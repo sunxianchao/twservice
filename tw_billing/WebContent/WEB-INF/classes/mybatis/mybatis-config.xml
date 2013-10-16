@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<typeAliases>
+		<typeAlias alias="Game" type="com.gamephone.common.to.GameTO" />
+		<typeAlias alias="Order" type="com.gamephone.billing.model.Order" />
+		<typeAlias alias="SendQueue" type="com.gamephone.billing.model.SendQueue" />
+	</typeAliases>
+	<mappers>
+		<mapper resource="com/gamephone/billing/dao/mappers/OrderMapper.xml" />
+		<mapper resource="com/gamephone/billing/dao/mappers/GameMapper.xml" />
+		<mapper resource="com/gamephone/billing/dao/mappers/SendQueueMapper.xml" />
+	</mappers>
+</configuration>		

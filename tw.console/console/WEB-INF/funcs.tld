@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib version="2.0" xmlns="http://java.sun.com/xml/ns/j2ee"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee         http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd">
+ <display-name>funcs</display-name>
+ <tlib-version>1.0</tlib-version>
+ <short-name>funcs</short-name>
+ <uri>funcs</uri>
+ 
+ <function>
+  <name>getSessionUser</name>
+  <function-class>com.gamephone.admin.common.web.Funcs</function-class>
+  <function-signature>com.gamephone.admin.common.to.AdminUserTO getSessionUser(javax.servlet.http.HttpSession)</function-signature>
+ </function>
+ 
+ <function>
+  <name>formatDateTime</name>
+  <function-class>com.gamephone.admin.common.web.Funcs</function-class>
+  <function-signature>java.lang.String formatDateTime(java.util.Date, java.lang.String)</function-signature>
+ </function>
+ 
+ <function>
+  <name>getBase64</name>
+  <function-class>com.gamephone.admin.common.web.Funcs</function-class>
+  <function-signature>java.lang.String getBase64(java.lang.String)</function-signature>
+ </function>
+ 
+</taglib>

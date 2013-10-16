@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/code/!svn/ver/9014/trunk/acs/src/config
+END
+cowboy-acs-prod.properties
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/code/!svn/ver/9014/trunk/acs/src/config/cowboy-acs-prod.properties
+END
+log4j-dev.properties
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/code/!svn/ver/5576/trunk/acs/src/config/log4j-dev.properties
+END
+log4j-test.properties
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/code/!svn/ver/5576/trunk/acs/src/config/log4j-test.properties
+END
+log4j-prod.properties
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/code/!svn/ver/8968/trunk/acs/src/config/log4j-prod.properties
+END
+cowboy-acs-dev.properties
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/code/!svn/ver/9014/trunk/acs/src/config/cowboy-acs-dev.properties
+END
+cowboy-acs-test.properties
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/code/!svn/ver/9014/trunk/acs/src/config/cowboy-acs-test.properties
+END

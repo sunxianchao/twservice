@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gamephone.acs.dao.ServerLogMapper">
+
+	<resultMap type="ServerLog" id="serverLogResultMap">
+		<id property="id" column="ID" />
+		<result property="gameRoleId" column="GAME_ROLE_ID" />
+		<result property="loginDate" column="LOGIN_DATE" />
+		<result property="channelId" column="CHANNEL_ID" />
+	</resultMap>
+	
+	<insert id="createServerLog" parameterType="ServerLog"  useGeneratedKeys="true" keyProperty="id">
+		insert into `SERVER_LOG`
+		(
+		  `GAME_ROLE_ID`,
+		  `LOGIN_DATE`,
+		  `CHANNEL_ID`
+		) 
+		VALUES (
+		  #{gameRoleId},
+		  now(),
+		  #{channelId}
+		)
+	</insert>
+	
+</mapper>

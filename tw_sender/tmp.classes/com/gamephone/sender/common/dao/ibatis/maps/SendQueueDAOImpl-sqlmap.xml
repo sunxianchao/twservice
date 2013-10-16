@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="SEND_QUEUE">
+  <typeAlias alias="SendQueueTO" type="com.gamephone.common.to.SendLogTO" />
+  
+  <resultMap id="SendQueueTO" class="SendQueueTO">
+    <result column="ID" jdbcType="int" javaType="java.lang.Integer" property="id" />
+    <result column="ORDER_ID" jdbcType="int" javaType="java.lang.Integer" property="orderId" />
+    <result column="POST_URL" jdbcType="varchar" javaType="java.lang.String" property="postUrl" /> 
+    <result column="PARAMS" jdbcType="varchar" javaType="java.lang.String" property="params" />   
+    <result column="LAST_TIME" jdbcType="datetime" javaType="java.util.Date" property="lastSendTime" />
+    <result column="TIMES" jdbcType="int" javaType="java.lang.Integer" property="sendTimes" />    
+    <result column="SEND_RES" jdbcType="varchar" javaType="java.lang.String" property="sendRes" />
+    <result column="ORDER_FROM" jdbcType="int" javaType="java.lang.Integer" property="orderFrom" />
+  </resultMap>
+  
+  <select id="getSendQueueOrders" parameterClass="java.util.Map" resultClass="SendQueueTO" resultMap="SendQueueTO">
+    select ID, ORDER_ID, POST_URL, PARAMS, LAST_TIME, TIMES, SEND_RES, ORDER_FROM from SEND_QUEUE
+    where LAST_TIME &lt;= subdate(now(), interval TIMES*#timeOut# minute) and right(ID, 1) = #trheadInd#
+    order by TIMES, LAST_TIME
+  </select>
+  
+  <update id="updateSendQueueOrder" parameterClass="SendQueueTO">
+    update SEND_QUEUE set LAST_TIME = now(), TIMES = TIMES + 1, POST_URL = #postUrl#, PARAMS = #params#, SEND_RES = #sendRes#  
+    where ID = #id# 
+  </update>
+  
+  <delete id="removeFromSendQueue" parameterClass="java.lang.Integer">
+    delete from SEND_QUEUE where ID = #id#
+  </delete>
+</sqlMap>

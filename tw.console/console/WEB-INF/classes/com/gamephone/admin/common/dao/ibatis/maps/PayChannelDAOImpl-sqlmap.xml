@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="PAY" >
+
+  <typeAlias alias="PayChannelTO" type="com.gamephone.common.to.PayChannelTO"/>
+  <typeAlias alias="PayChannelCriteriaTO" type="com.gamephone.admin.common.criteria.PayChannelCriteriaTO"/>
+  
+  <resultMap id="PayChannelTO" class="PayChannelTO">
+    <result column="ID" jdbcType="int" javaType="java.lang.Integer" property="id" />
+    <result column="GAME_ID" jdbcType="int" javaType="java.lang.Integer" property="gameId" />
+    <result column="GAME_NAME" jdbcType="varchar" javaType="java.lang.String" property="gameName" />
+    <result column="PAY_NAME" jdbcType="varchar" javaType="java.lang.String" property="payName" />
+    <result column="PAY_SERVER_ID" jdbcType="varchar" javaType="java.lang.String" property="serverId" />
+    <result column="PAY_SERVICE_NAME" jdbcType="varchar" javaType="java.lang.String" property="serverName" />
+    <result column="PAY_AMOUNT" jdbcType="int" javaType="java.lang.Integer" property="amount"/>
+    <result column="PID" jdbcType="int" javaType="java.lang.Integer" property="pid" />
+    <result column="IS_LOCAL" jdbcType="int" javaType="java.lang.Integer" property="isLocal" />
+    <result column="SEQ" jdbcType="int" javaType="java.lang.Integer" property="order" />
+    <result column="STATUS" jdbcType="int" javaType="java.lang.Integer" property="status" />
+  </resultMap>
+  
+  <sql id="select-from-pay-channel">
+    select P.ID, GAME_ID,<isNotEmpty property="gameId"> G.NAME GAME_NAME,</isNotEmpty>
+    <isEmpty property="gameId"> 0 GAME_NAME, </isEmpty>
+    PAY_NAME, PAY_SERVER_ID, PAY_SERVICE_NAME, PAY_AMOUNT, PID, IS_LOCAL, SEQ, P.STATUS
+    from PAY_CHANNEL P
+    <isNotEmpty property="gameId">, GAME G</isNotEmpty>
+  </sql>
+  
+  
+  <sql id="where-pay-channel">
+  	where 1=1
+  	<isNotEmpty property="id"> and P.ID=#id#</isNotEmpty>
+  	<isNotEmpty property="pid"> and PID=#pid#</isNotEmpty>
+  	<isNotEmpty property="gameId"> and P.GAME_ID=G.ID and GAME_ID=#gameId#</isNotEmpty>
+  	<isNotEmpty property="status"> and P.STATUS=#status#</isNotEmpty>
+  	<isNotEmpty property="isLocal"> and IS_LOCAL=#isLocal#</isNotEmpty>
+  	<isNotEmpty property="serverId"> and PAY_SERVER_ID=#serverId#</isNotEmpty>
+  </sql>
+  
+  <select id="getPayChannels" resultMap="PayChannelTO" parameterClass="PayChannelCriteriaTO">
+    <include refid="select-from-pay-channel" />
+    <include refid="where-pay-channel" />
+    order by PID DESC, SEQ ASC
+    <isGreaterThan property="pageModel.pageSize" compareValue="0">
+      limit #pageModel.minIndex# , #pageModel.pageSize#
+    </isGreaterThan>
+  </select>
+  
+  <select id="getPayChannelCNT" resultClass="java.lang.Integer" parameterClass="PayChannelCriteriaTO">
+  	select count(*) from PAY_CHANNEL P<isNotEmpty property="gameId">, GAME G</isNotEmpty>
+    <include refid="where-pay-channel" />
+  </select>
+  
+  <update id="updatePayChannelStatus" parameterClass="PayChannelTO">
+  update PAY_CHANNEL set ID=#id#
+  	<isNotEmpty property="pid"> , PID=#pid#</isNotEmpty>
+  	<isNotEmpty property="gameId"> , GAME_ID=#gameId#</isNotEmpty>
+  	<isNotEmpty property="status"> , STATUS=#status#</isNotEmpty>
+  	<isNotEmpty property="isLocal"> , IS_LOCAL=#isLocal#</isNotEmpty>
+  	<isNotEmpty property="serverId"> , PAY_SERVER_ID=#serverId#</isNotEmpty>
+  	<isNotEmpty property="serverName"> , PAY_SERVICE_NAME=#serverName#</isNotEmpty>
+  	<isNotEmpty property="order"> , SEQ=#order#</isNotEmpty>
+  	<isNotEmpty property="amount"> , PAY_AMOUNT=#amount#</isNotEmpty>
+  	<isNotEmpty property="payName"> , PAY_NAME=#payName#</isNotEmpty>
+  	where ID=#id#
+  </update>
+  
+   <insert id="addChildPayChannel" parameterClass="PayChannelTO">
+    insert into PAY_CHANNEL (GAME_ID, PAY_NAME, PAY_SERVER_ID, PAY_SERVICE_NAME, PAY_AMOUNT, PID, IS_LOCAL, SEQ, STATUS)
+    values (#gameId#, #payName#, #serverId#, #serverName#, #amount#, #pid#, (select IS_LOCAL from PAY_CHANNEL p where p.PID=#pid# limit 1), (select IFNULL(MAX(p.SEQ), 0)+1 from PAY_CHANNEL p where p.PID=#pid# and GAME_ID=#gameId#), #status#)
+  </insert>
+  
+  <insert id="addParentPayChannel" parameterClass="PayChannelTO">
+    insert into PAY_CHANNEL (GAME_ID, PAY_NAME,  PID, IS_LOCAL, SEQ, STATUS)
+    values (0, #payName#, 0, #isLocal#, (select max(p.SEQ)+1 from PAY_CHANNEL p where p.PID=0), #status#)
+  </insert>
+</sqlMap>

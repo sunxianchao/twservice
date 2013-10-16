@@ -1,0 +1,86 @@
+package com.gamephone.pay.web.controller;
+
+import java.io.IOException;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.gamephone.common.context.SystemProperties;
+import com.gamephone.common.to.OrderTO;
+import com.gamephone.common.to.ResponseTO;
+import com.gamephone.common.util.RequestUtil;
+import com.gamephone.pay.exception.YunPayException;
+import com.gamephone.pay.service.OrderService;
+import com.gamephone.pay.util.GooglePlaySecurity;
+
+
+@Controller
+public class GooglePlayController {
+
+    private static final Logger logger=Logger.getLogger(GooglePlayController.class);
+
+    @Resource
+    private OrderService orderService;
+    
+    @RequestMapping("/service/order/billingupdate.html")
+    public ResponseTO<String> updateOrder(HttpServletRequest request, HttpServletResponse response) throws YunPayException,
+        IOException {
+        Integer orderid=RequestUtil.getInteger(request, "orderid");
+        String tradeNO=RequestUtil.getString(request, "tradeno");
+        Integer status=RequestUtil.getInteger(request, "status");
+        String uid=RequestUtil.getString(request, "uid");
+        String productId=RequestUtil.getString(request, "productid");
+        String signedData=RequestUtil.getString(request, "signeddata");
+        String signature=RequestUtil.getString(request, "signature");
+        String amountString=SystemProperties.getProperty("google.billing.productid."+productId);
+        if(StringUtils.isBlank(amountString)){
+            throw new YunPayException("未识别的产品id："+productId);
+        }
+        logger.info("googlebilling_productId:"+productId+"\torderi d:"+orderid+"\tstatus:"+status);
+        int amount=Integer.valueOf(amountString);
+        OrderTO order=orderService.getOrderById(orderid);
+        ResponseTO<String> res=new ResponseTO<String>();
+        if(order != null) {
+            String encodedPublicKey=SystemProperties.getProperty("google.public.key.gameid"+order.getGameId());
+            logger.info("publickey:"+encodedPublicKey);
+            boolean isVerify=GooglePlaySecurity.verify(encodedPublicKey, signedData, signature);
+            if(!isVerify){
+                logger.info("google verify error signedData:"+signedData+"\tsignature:"+signature);
+                throw new YunPayException("google verify error");
+            }
+            logger.info("request userId:"+uid+"\torderid:"+order.getId()+"\tuserid:"+order.getUserId()+"\tradeNO:"+tradeNO);
+            if(uid ==null || !uid.equals(order.getUserId())){
+                throw new YunPayException("非法用户："+uid);
+            }
+            order.setAmount(amount * 100);
+            order.setTradeNo(tradeNO);
+            String msg=Integer.valueOf(status) == 0 ? "完成交易" : "交易失敗";
+            int payStatus=Integer.valueOf(status) == 0 ? 1 : 0;
+            order.setPaySuccess(payStatus);
+            order.setResultMsg(msg);
+            order.setType(3);
+            order.setProductId(productId);
+            order.setResultCode(String.valueOf(payStatus));
+            orderService.updateOrderAndSendQueue(order);
+            res.setSuccess(true);
+            res.setBusinessResult(order.getOrderId());
+        } else {
+            throw new YunPayException("未知订单");
+        }
+        return res;
+    }
+    
+    public static void main(String[] args) {
+        String encodedPublicKey="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzgHFT8LcwdPPOKxhtRzwfGUf7MIyDIMHmPgK+imIzHDr4lefXDuefrTEQnjmn0tkMZiZ6jPeri7ShvaFA7LseIDHKI9ghNZA3Bh1+GA0fWvTBhHkPJUqhwmPBm861t0NlBQDyl0IwT7weiCb0tYx6gZl952t64j9yDBjScA4A6oyp3YusVKuAoq3K712+cBTeaZlj6LuddXIEXsivB2hXk2XU6R0PCJ8u0/eSX8dOe3HcKYRUbDY6lI9MWDPnw+IugtXJdnYozRXxfMh/exq854U9GLuAKZLXfIMdP91U75m1NAAhgTifF/Z0+kAxk3ZjX8yEdKn429SwKp9pIckPQIDAQAB";
+        String signdata="{\"orderId\":\"12999763169054705758.1379061891092812\",\"packageName\":\"com.tuomi.happysanguoandroid_tw\",\"productId\":\"com.phonegame.dw3.gpay_f.01\",\"purchaseTime\":1369725198000,\"purchaseState\":0,\"developerPayload\":\"com.phonegame.dw3\",\"purchaseToken\":\"qqwpirxvdyqjsfbhakziatuk.AO-J1Owwx6sJ7GvGHJ8x203n7_31LWo4MbdAdjhD3mYpcRcd-bXxaO1BB9L08aQIqmcJjCGK9ju6lHkmsIhLvL_xlCCgkhtMjjTPvTFxk0iND54xDAr5bCNJK-LnZ_ra1mG57Oum3G-5MfD9A2lWuZCLhW998GKz5Q\"}";
+        String sign="hcGpNx2R/Fs2HeN7/GHccMsUxP7PHKEvLe08YFoAHV4MQ4Fjp865SkyTPA3qWBtYIBirAXut0GJQyVmngzIXqgd17uC/SgHO6pkpPH7FZ2BJAFSCBfQS8OljbNayumFPMt81rb8Sr+gXitubE2ENoLr+qqOw3HRyJV/hGIWDCe9pSl4ZZdSBVOlwIaRHjKydcjH1bZC73jFkJYAnoVGBmIVZJ5KK2f9joZL1FOVM7CQsCtPnDRBrEq7QJbK3PHb23Xr0/bm74rJLnCjjctNKQXglKZlzWWFzEuU53Eg2B/Tzgs2OTW7PJPcNhc0xFnf1jD+/Hyg3TSdtuoxOldBVlA==";
+        boolean status=GooglePlaySecurity.verify(encodedPublicKey, signdata, sign);
+        System.out.println(status);
+    }
+}

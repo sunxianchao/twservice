@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<typeAliases>
+		<typeAlias alias="User" type="cn.cowboy.common.acs.model.User" />
+		<typeAlias alias="Role" type="cn.cowboy.acs.model.Role" />
+		<typeAlias alias="Resource" type="cn.cowboy.acs.model.Resource" />
+		<typeAlias alias="Permission" type="cn.cowboy.acs.model.Permission" />
+		<typeAlias alias="AcegiUser" type="cn.cowboy.acs.model.AcegiUser" />
+		<typeAlias alias="UserLoginLog" type="cn.cowboy.acs.model.UserLoginLog" />
+		<typeAlias alias="VipBoard" type="cn.cowboy.vip.model.VipBoard" />
+	</typeAliases>
+	<mappers>		
+		<mapper resource="cn/cowboy/acs/data/mappers/UserMapper.xml" />
+		<mapper resource="cn/cowboy/acs/data/mappers/RoleMapper.xml" />
+		<mapper resource="cn/cowboy/acs/data/mappers/ResourceMapper.xml" />
+		<mapper resource="cn/cowboy/acs/data/mappers/PermissionMapper.xml" />
+		<mapper resource="cn/cowboy/acs/data/mappers/UserMapper.xml" />
+		<mapper resource="cn/cowboy/acs/data/mappers/AcegiUserMapper.xml" />
+		<mapper resource="cn/cowboy/acs/data/mappers/UserLoginLogMapper.xml" />
+		<mapper resource="cn/cowboy/acs/data/mappers/MigUserMapper.xml" />
+		<mapper resource="cn/cowboy/vip/data/mappers/VipBoardMapper.xml" />
+	</mappers>
+</configuration>		

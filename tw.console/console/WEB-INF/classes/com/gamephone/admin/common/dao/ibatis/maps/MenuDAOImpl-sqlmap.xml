@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="MENU">
+  <typeAlias alias="MenuTO" type="com.gamephone.admin.common.to.MenuTO" />
+  
+  <resultMap id="MenuTO" class="MenuTO">
+    <result column="ID" jdbcType="int" javaType="java.lang.Long" property="id" />
+    <result column="PARENT_ID" jdbcType="int" javaType="java.lang.Long" property="parent.id" />
+    <result column="NAME" jdbcType="varchar" javaType="java.lang.String" property="name" />  
+    <result column="PARENT_ID_PATH" jdbcType="varchar" javaType="java.lang.String" property="parentIdPath" />
+    <result column="URL" jdbcType="varchar" javaType="java.lang.String" property="url" />
+    <result column="REMARK" jdbcType="varchar" javaType="java.lang.String" property="remark" />
+    <result column="SORT_ORDER_NO" jdbcType="int" javaType="java.lang.Integer" property="sortOrderNo" />
+  </resultMap>
+  
+  <insert id="add" parameterClass="MenuTO">
+   insert into MENU (PARENT_ID, NAME, PARENT_ID_PATH, URL, REMARK, SORT_ORDER_NO) values (#parent.id#, #name#, #parentIdPath#, #url#, #remark#, #sortOrderNo#)
+  </insert>
+  
+  <delete id="deleteById" parameterClass="java.lang.Long">
+    delete from MENU where ID = #id#
+  </delete>
+  
+  <sql id="getMenuPublic" >
+    select SM.ID, SM.PARENT_ID, SM.NAME, SM.PARENT_ID_PATH, SM.URL, SM.REMARK, SM.SORT_ORDER_NO from MENU SM
+  </sql>
+    
+  <!-- 查找记录 -->
+  <select id="getById" parameterClass="java.lang.Long" resultMap="MenuTO" resultClass="MenuTO">
+    <include refid="getMenuPublic"/>
+    where SM.ID = #id#
+  </select>
+    
+  <select id="getMenus" resultMap="MenuTO" resultClass="MenuTO">
+    <include refid="getMenuPublic"/>
+    order by SM.PARENT_ID_PATH, SM.SORT_ORDER_NO
+  </select>
+  
+  <select id="getUserMenus" resultMap="MenuTO" resultClass="MenuTO">
+    <include refid="getMenuPublic"/>
+    , ADMIN_USER_MENU UM
+    where SM.ID = UM.MENU_ID and UM.ADMIN_USER_ID = #userId#
+    order by SM.PARENT_ID_PATH, SM.SORT_ORDER_NO
+  </select>
+  
+  <update id="update" parameterClass="MenuTO">
+    update MENU set PARENT_ID = #parent.id#, NAME = #name#, PARENT_ID_PATH = #parentIdPath#, URL = #url#, REMARK = #remark#, SORT_ORDER_NO = #sortOrderNo#
+    where ID = #id#
+  </update>
+  
+  <update id="updateChildParentPath" parameterClass="java.util.HashMap">
+    update MENU set PARENT_ID_PATH  = replace(PARENT_ID_PATH, #oldParentIdPath#, #newParentIdPath#)
+  </update>
+  
+  <insert id="addUserMenu" parameterClass="com.gamephone.admin.common.to.AdminUserMenuTO">
+    insert into ADMIN_USER_MENU (ADMIN_USER_ID, MENU_ID) values (#userId#, #menuId#)
+  </insert>
+  
+  <delete id="deleteUserMenus" parameterClass="java.lang.Long">
+    delete from ADMIN_USER_MENU where ADMIN_USER_ID = #userId#
+  </delete>
+  
+  <delete id="deleteUserMenusByMenuId" parameterClass="java.lang.Long">
+    delete from ADMIN_USER_MENU where MENU_ID = #menuId#
+  </delete>
+</sqlMap>

@@ -1,0 +1,10 @@
+@CHARSET "UTF-8";
+
+table.display {width:100%;font-size:12px;}
+table.display a{color: #0000FF;text-decoration: none;line-height:25px;}
+table.display a:link {text-decoration:none;}
+table.display a:visited {text-decoration:none;}
+table.display a:hover {text-decoration:underline;}
+
+table.display, table.display th, table.display td {vertical-align: middle;border-collapse: collapse;border: 1px solid #a9a9a9;padding: 3px;}
+table.display th {background-color: #dcdcdc;}

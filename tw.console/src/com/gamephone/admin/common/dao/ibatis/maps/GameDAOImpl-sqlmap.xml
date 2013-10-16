@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="GAME" >
+
+  <typeAlias alias="gameTO" type="com.gamephone.common.to.GameTO"/>
+  <typeAlias alias="gameCriteriaTO" type="com.gamephone.admin.common.criteria.GameCriteriaTO"/>
+  
+  <resultMap id="gameTO" class="gameTO">
+    <result column="ID" jdbcType="int" javaType="java.lang.Integer" property="id" />
+    <result column="CP_ID" jdbcType="int" javaType="java.lang.Integer" property="cpId" />
+    <result column="SEQ_NUM" jdbcType="int" javaType="java.lang.Integer" property="seqNum" />
+    <result column="NAME" jdbcType="varchar" javaType="java.lang.String" property="name" />
+    <result column="STATUS" jdbcType="int" javaType="java.lang.Integer" property="status"/>
+    <result column="SECRET_KEY" jdbcType="varchar" javaType="java.lang.String" property="secretKey" />
+    <result column="NOTIFY_KEY" jdbcType="varchar" javaType="java.lang.String" property="notifyKey" />
+    <result column="NOTIFY_URL" jdbcType="varchar" javaType="java.lang.String" property="notifyUrl" />
+    <result column="CREATED_DATE" jdbcType="datetime" javaType="java.util.Date" property="createdDate" />
+  </resultMap>
+  
+  <sql id="select-from-game">
+    select G.ID, CP_ID, SEQ_NUM, G.NAME,  G.STATUS, SECRET_KEY, NOTIFY_KEY, NOTIFY_URL, CREATED_DATE 
+    from GAME as G 
+  </sql>
+  
+  <sql id="where-from-game">
+    where 1=1
+    <isNotNull prepend=" and " property="id">G.ID = #id#</isNotNull>
+    <isNotEmpty prepend=" and " property="name">G.NAME like '%$name$%'</isNotEmpty>
+    <isNotEmpty prepend=" and " property="status">G.STATUS = #status#</isNotEmpty>
+  </sql>
+ 
+  <select id="getGameByCriteria" resultMap="gameTO" parameterClass="gameCriteriaTO">
+    <include refid="select-from-game" />
+    <include refid="where-from-game" />
+    order by G.ID DESC
+    <isGreaterThan property="searchPagerModel.pageSize" compareValue="0">
+      limit #searchPagerModel.minIndex# , #searchPagerModel.pageSize#
+    </isGreaterThan>
+  </select>
+  
+  <select id="getGameById" resultMap="gameTO" parameterClass="java.lang.Long">
+    <include refid="select-from-game" />
+    where G.ID=#id#
+  </select>
+  
+   <select id="getGameByIds" resultMap="gameTO" parameterClass="java.util.HashMap">
+    <include refid="select-from-game" />
+    where 1=1 
+    <isNotEmpty property="gameids">
+    	and G.ID in
+      <iterate property="gameids" open="(" close=")" conjunction=",">
+         #gameids[]# 
+      </iterate>
+    </isNotEmpty>
+  </select>
+  
+  <insert id="insertGame" parameterClass="gameTO">
+    insert into GAME (CP_ID, SEQ_NUM, NAME, STATUS, SECRET_KEY, NOTIFY_KEY, NOTIFY_URL, CREATED_DATE) values
+    (#cpId#, #seqNum#, #name#, #status#, #secretKey#, #notifyKey#, #notifyUrl#, now())
+  </insert>
+  
+  <update id="updateGame" parameterClass="gameTO">
+    update GAME set
+    <isNotEmpty prepend=" CP_ID " property="cpId"> = #cpId#, </isNotEmpty>
+    <isNotEmpty prepend=" SEQ_NUM " property="seqNum"> = #seqNum#, </isNotEmpty>
+    <isNotEmpty prepend=" NAME " property="name"> = #name#, </isNotEmpty>
+    <isNotEmpty prepend=" STATUS " property="status"> = #status#, </isNotEmpty>
+    <isNotEmpty prepend=" NOTIFY_URL " property="notifyUrl"> = #notifyUrl#, </isNotEmpty>
+    ID=#id#
+    where ID=#id# 
+  </update>
+  
+  <select id="getGameCntByCriteria" resultClass="java.lang.Integer" parameterClass="gameCriteriaTO">
+    select count(*) from GAME as G
+    <include refid="where-from-game" />
+  </select>
+  <select id="getAllGames" resultMap="gameTO" >
+    <include refid="select-from-game" />
+    where 1=1
+  </select>
+</sqlMap>

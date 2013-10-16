@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="ADMIN_USER" >
+
+  <typeAlias alias="AdminUserTO" type="com.gamephone.admin.common.to.AdminUserTO"/>
+  <typeAlias alias="AdminUserSearchCriteriaTO" type="com.gamephone.admin.common.criteria.AdminUserSearchCriteriaTO"/>
+  
+  <resultMap id="AdminUserTO" class="AdminUserTO">
+    <result column="ID" jdbcType="int" javaType="java.lang.Long" property="id" />
+    <result column="EMAIL" jdbcType="varchar" javaType="java.lang.String" property="email" />
+    <result column="PASSWORD" jdbcType="varchar" javaType="java.lang.String" property="password" />
+    <result column="REAL_NAME" jdbcType="varchar" javaType="java.lang.String" property="realname" />
+    <result column="IS_ADMIN" jdbcType="int" javaType="YesNoType" property="isadmin"/>
+    <result column="STATUS" jdbcType="int" javaType="StatusType" property="statusType"/>
+  </resultMap>
+  
+  <sql id="select-from-adminuser">
+    select ID, EMAIL, PASSWORD, REAL_NAME, IS_ADMIN, STATUS from ADMIN_USER
+  </sql>
+   
+  <sql id="where-from-adminuser">
+    <dynamic prepend="where">
+	    <isNotNull prepend=" and " property="id">ID = #id#</isNotNull>
+	    <isNotEmpty prepend=" and " property="email">EMAIL like '%$email$%'</isNotEmpty>
+	    <isNotEmpty prepend=" and " property="realname">REAL_NAME like '%$realname$%'</isNotEmpty>
+    </dynamic>
+  </sql>
+  
+  <select id="getAdminUserByEmail" resultMap="AdminUserTO" parameterClass="java.lang.String">
+    <include refid="select-from-adminuser" /> 
+    WHERE EMAIL=#email# limit 0,1
+  </select>
+  
+  <select id="getAdminUsers" resultMap="AdminUserTO" parameterClass="AdminUserSearchCriteriaTO">
+    <include refid="select-from-adminuser" />
+    <include refid="where-from-adminuser" />
+    order by ID DESC
+    limit #pageModel.offset#, #pageModel.pageSize#
+  </select>
+    
+  <select id="getAdminUsersCount" resultClass="java.lang.Integer" parameterClass="AdminUserSearchCriteriaTO">
+    select count(*) from ADMIN_USER
+    <include refid="where-from-adminuser" />
+  </select>
+  
+  <select id="getAdminUserById" resultMap="AdminUserTO" parameterClass="java.lang.Long">
+    <include refid="select-from-adminuser" /> 
+    WHERE ID=#userId#
+  </select>
+  
+  <insert id="addAdminUser" parameterClass="AdminUserTO">
+    insert into ADMIN_USER(PASSWORD, EMAIL, REAL_NAME, IS_ADMIN) values(#password#, #email#, #realname#, #isadmin#)
+  </insert>
+  
+  <update id="updateAdminUser" parameterClass="AdminUserTO">
+    update ADMIN_USER set REAL_NAME = #realname#, IS_ADMIN = #isadmin#,
+    <isNotEmpty prepend=" PASSWORD " property="password"> = #password#, </isNotEmpty>
+  STATUS = #statusType.id# 
+    where ID=#id# 
+  </update>
+
+  <update id="delAdminUser" parameterClass="java.lang.Long">
+    update ADMIN_USER set STATUS=0 where ID = #id#
+  </update>
+  
+</sqlMap>

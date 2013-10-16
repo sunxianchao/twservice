@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="ORDER" >
+
+  <typeAlias alias="OrderTO" type="com.gamephone.common.to.OrderTO"/>
+  <typeAlias alias="OrderCriteriaTO" type="com.gamephone.pay.criteria.OrderCriteriaTO"/>
+  
+  <resultMap id="OrderTO" class="OrderTO">
+    <result column="ID" jdbcType="int" javaType="java.lang.Integer" property="id" />
+    <result column="CP_ID" jdbcType="int" javaType="java.lang.Integer" property="cpId" />
+    <result column="USER_ID" jdbcType="varchar" javaType="java.lang.String" property="userId" />
+    <result column="GAME_ID" jdbcType="int" javaType="java.lang.Integer" property="gameId" />
+    <result column="GAME_SERVER_ID" jdbcType="int" javaType="java.lang.Integer" property="gameServerId"/>
+    <result column="AMOUNT" jdbcType="int" javaType="java.lang.Integer" property="amount" />    
+    <result column="PAY_SUCCESS" jdbcType="smallint" javaType="java.lang.Integer" property="paySuccess" />
+    <result column="ORDER_ID" jdbcType="varchar" javaType="java.lang.String" property="orderId"/>
+    <result column="TRADE_NO" jdbcType="varchar" javaType="java.lang.String" property="tradeNo"/>
+    <result column="RESULT_CODE" jdbcType="varchar" javaType="java.lang.String" property="resultCode"/>
+    <result column="RESULT_MSG" jdbcType="varchar" javaType="java.lang.String" property="resultMsg"/>
+    <result column="RESULT_DATE" jdbcType="datetime" javaType="java.util.Date" property="resultDate" />
+    <result column="CREATED_DATE" jdbcType="datetime" javaType="java.util.Date" property="createdDate" />
+    <result column="CARD_NO" jdbcType="varchar" javaType="java.lang.String" property="cardNo"/>
+    <result column="CARD_PWD" jdbcType="varchar" javaType="java.lang.String" property="cardPwd"/>
+    <result column="AUTH_CODE" jdbcType="varchar" javaType="java.lang.String" property="authCode"/>
+    <result column="PRODUCT_ID" jdbcType="varchar" javaType="java.lang.String" property="productId"/>
+    <result column="TYPE" jdbcType="smallint" javaType="java.lang.Integer" property="type"/>
+    <result column="PRO_NO" jdbcType="varchar" javaType="java.lang.String" property="proNo"/>
+  </resultMap>
+  
+  <insert id="addOrder" parameterClass="OrderTO">
+    insert into ORDER_LOG (CP_ID, USER_ID, GAME_ID, GAME_SERVER_ID,  ORDER_ID, CREATED_DATE, EXT_INFO, AMOUNT, CARD_NO, CARD_PWD, AUTH_CODE, PRODUCT_ID, TYPE)
+    values (#cpId#, #userId#, #gameId#, #gameServerId#, #orderId#, now(), #extInfo#, #amount#, #cardNo#, #cardPwd#, #authCode#, #productId#, #type#)
+    <selectKey resultClass="java.lang.Integer" keyProperty="id">
+      select LAST_INSERT_ID()
+    </selectKey>
+  </insert>
+  
+  <!-- 为了避免重复更新，只能更新未支付成功的 -->
+  <update id="updateOrder" parameterClass="OrderTO">
+    update ORDER_LOG
+    set RESULT_DATE = now()
+    <isNotNull property="amount" prepend=",">AMOUNT = #amount#</isNotNull>
+    <isNotNull property="paySuccess" prepend=",">PAY_SUCCESS = #paySuccess#</isNotNull>
+    <isNotNull property="orderId" prepend=",">ORDER_ID = #orderId#</isNotNull>
+    <isNotNull property="tradeNo" prepend=",">TRADE_NO = #tradeNo#</isNotNull>
+    <isNotNull property="resultCode" prepend=",">RESULT_CODE = #resultCode#</isNotNull>
+    <isNotNull property="resultMsg" prepend=",">RESULT_MSG = #resultMsg#</isNotNull>
+    <isNotNull property="authCode" prepend=",">AUTH_CODE = #authCode#</isNotNull>
+    <isNotNull property="productId" prepend=",">PRODUCT_ID = #productId#</isNotNull>
+    <isNotNull property="proNo" prepend=",">PRO_NO = #proNo#</isNotNull>
+    <isNotNull property="cardNo" prepend=",">CARD_NO = #cardNo#</isNotNull>
+    <isNotNull property="cardPwd" prepend=",">CARD_PWD = #cardPwd#</isNotNull>
+    <isNotNull property="type" prepend=",">TYPE = #type#</isNotNull>
+    where ID = #id# and ORDER_ID=#orderId# and (PAY_SUCCESS is null or PAY_SUCCESS != 1)
+  </update>  
+  
+    <select id="getOrderById" resultMap="OrderTO" parameterClass="java.lang.Integer">
+    select  ID,  USER_ID,  CP_ID,  GAME_ID,  GAME_SERVER_ID,  CARD_NO,  CARD_PWD,  AMOUNT,  PAY_SUCCESS, ORDER_ID,
+  			TRADE_NO,  RESULT_CODE,  RESULT_MSG,  RESULT_DATE,  CREATED_DATE,  EXT_INFO,  AUTH_CODE,  TYPE,  PRODUCT_ID, PRO_NO
+    from ORDER_LOG where ID = #id# and (PAY_SUCCESS is null or PAY_SUCCESS != 1)
+  </select>
+  
+  <select id="getOrderByTranNo" resultMap="OrderTO" parameterClass="java.util.HashMap">
+ 	 select ID,  USER_ID,  CP_ID,  GAME_ID,  GAME_SERVER_ID,  CARD_NO,  CARD_PWD,  AMOUNT,  PAY_SUCCESS, ORDER_ID,
+  			TRADE_NO,  RESULT_CODE,  RESULT_MSG,  RESULT_DATE,  CREATED_DATE,  EXT_INFO,  AUTH_CODE,  TYPE,  PRODUCT_ID, PRO_NO
+    from ORDER_LOG where TRADE_NO = #tradeNo# and PROMPT_CHANNEL_ID=#promptChannelId# and  PAY_SUCCESS = 1
+  </select>
+  
+  <select id="getOrderByAuthCode" resultMap="OrderTO" parameterClass="java.util.HashMap">
+ 	  select ID,  USER_ID,  CP_ID,  GAME_ID,  GAME_SERVER_ID,  CARD_NO,  CARD_PWD,  AMOUNT,  PAY_SUCCESS, ORDER_ID,
+  			TRADE_NO,  RESULT_CODE,  RESULT_MSG,  RESULT_DATE,  CREATED_DATE,  EXT_INFO,  AUTH_CODE,  TYPE,  PRODUCT_ID, PRO_NO
+    from ORDER_LOG where AUTH_CODE = #authCode# and (PAY_SUCCESS is null or PAY_SUCCESS != 1)
+  </select>
+  
+  <select id="getOrderByOrderId" resultMap="OrderTO" parameterClass="java.lang.String">
+   select ID,  USER_ID,  CP_ID,  GAME_ID,  GAME_SERVER_ID,  CARD_NO,  CARD_PWD,  AMOUNT,  PAY_SUCCESS, ORDER_ID,
+  			TRADE_NO,  RESULT_CODE,  RESULT_MSG,  RESULT_DATE,  CREATED_DATE,  EXT_INFO,  AUTH_CODE,  TYPE,  PRODUCT_ID, PRO_NO
+    from ORDER_LOG where ORDER_ID = #ORDER_ID# and (PAY_SUCCESS is null or PAY_SUCCESS != 1)
+  </select>
+
+ <select id="getOrders" resultMap="OrderTO" parameterClass="OrderCriteriaTO">
+  select ID,  USER_ID,  CP_ID,  GAME_ID,  GAME_SERVER_ID,  CARD_NO,  CARD_PWD,  AMOUNT,  PAY_SUCCESS, ORDER_ID,
+  			TRADE_NO,  RESULT_CODE,  RESULT_MSG,  RESULT_DATE,  CREATED_DATE,  EXT_INFO,  AUTH_CODE,  TYPE,  PRODUCT_ID, PRO_NO
+    from ORDER_LOG where  PAY_SUCCESS = 1 and TYPE=1 
+    <isNotEmpty property="startDate"> and RESULT_DATE &gt;=#startDate#</isNotEmpty>
+	<isNotEmpty property="endDate"> and RESULT_DATE &lt;#endDate#</isNotEmpty>
+	<isNotEmpty property="cardNo"> and CARD_NO=#cardNo#</isNotEmpty>
+ </select>
+</sqlMap>

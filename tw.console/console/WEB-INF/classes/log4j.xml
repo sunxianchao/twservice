@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!--  Log4j Configuration                                                  -->
+<!--                                                                       -->
+<!-- ===================================================================== -->
+
+<!-- $Id: log4j.xml,v 1.2 2012/06/12 04:12:14 xianchao.sun Exp $ -->
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="false">
+
+   <!-- ================================= -->
+   <!-- Preserve messages in a local file -->
+   <!-- ================================= -->
+
+   <!-- A time/date based rolling appender -->
+   <appender name="FILE" class="org.apache.log4j.DailyRollingFileAppender">
+      <errorHandler class="org.apache.log4j.helpers.OnlyOnceErrorHandler"/>
+      <param name="File" value="/home/downjoy/logs/context_smartngadmin.log"/>
+      <!-- <param name="File" value="D:/logs/context_smartngadmin.log"/> -->
+      <param name="encoding" value="UTF-8" />
+      <param name="Append" value="true"/>
+      <param name="Threshold" value="ERROR"/>
+
+      <!-- Rollover at midnight each day. -->
+      <param name="DatePattern" value="'.'yyyy-MM-dd"/>
+
+      <!-- Rollover at the top of each hour
+      <param name="DatePattern" value="'.'yyyy-MM-dd-HH"/>
+      -->
+
+      <layout class="org.apache.log4j.PatternLayout">
+         <!-- The default pattern: Date Priority [Category] Message\n -->
+         <param name="ConversionPattern" value="[%-5p] &lt;%d{yyyy-MM-dd HH:mm:ss,SSS}&gt; [%c] %m%n"/>
+
+         <!-- The full pattern: Date MS Priority [Category] (Thread:NDC) Message\n
+         <param name="ConversionPattern" value="%d %-5r %-5p [%c] (%t:%x) %m%n"/>
+          -->
+      </layout>
+   </appender>
+
+   <!-- ============================== -->
+   <!-- Append messages to the console -->
+   <!-- ============================== -->
+
+   <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+      <errorHandler class="org.apache.log4j.helpers.OnlyOnceErrorHandler"/>
+      <param name="Target" value="System.out"/>
+      <param name="Threshold" value="ERROR"/>
+
+      <layout class="org.apache.log4j.PatternLayout">
+         <!-- The default pattern: Date Priority [Category] Message\n -->
+         <!-- <param name="ConversionPattern" value="%d{ABSOLUTE} %-5p [%c{1}] %m%n"/> -->
+         <param name="ConversionPattern" value="[%-5p] &lt;%d{MM-dd HH:mm:ss,SSS}&gt; [%c] %m%n"/>
+      </layout>
+   </appender>
+
+   <root>
+      <appender-ref ref="CONSOLE"/>
+      <appender-ref ref="FILE"/>
+   </root>
+<!--  IBatis log -->
+  <appender name="IBatis" class="org.apache.log4j.ConsoleAppender">
+    <layout class="org.apache.log4j.PatternLayout">
+     <param name="ConversionPattern"
+      value="%-4r [%t] %-5p %c %x - %m%n" />
+    </layout>
+    <filter class="org.apache.log4j.varia.LevelRangeFilter">
+     <param name="LevelMin" value="DEBUG" />
+     <param name="LevelMax" value="DEBUG" />
+    </filter>
+  </appender>
+  
+   <logger name="com.ibatis" additivity="true">
+    <level value="DEBUG" />
+   </logger>
+   
+   <logger name="java.sql.Connection" additivity="true">
+    <level value="DEBUG" />
+   </logger>
+   
+   <logger name="java.sql.Statement" additivity="true">
+    <level value="DEBUG" />
+   </logger>
+   
+   <logger name="java.sql.PreparedStatement" additivity="true">
+    <level value="DEBUG" />
+    <appender-ref ref="IBatis" />
+   </logger>
+   
+   <logger name="java.sql.ResultSet" additivity="true">
+    <level value="DEBUG" />
+    <appender-ref ref="IBatis" />
+   </logger> 
+
+</log4j:configuration>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="BAD_QUEUE">
+  <typeAlias alias="SendLogTO" type="com.gamephone.common.to.SendLogTO" />
+  
+  <resultMap id="SendLogTO" class="SendLogTO">
+    <result column="ID" jdbcType="int" javaType="java.lang.Integer" property="id" />
+    <result column="ORDER_ID" jdbcType="int" javaType="java.lang.Integer" property="orderId" />
+    <result column="POST_URL" jdbcType="varchar" javaType="java.lang.String" property="postUrl" /> 
+    <result column="PARAMS" jdbcType="varchar" javaType="java.lang.String" property="params" />   
+    <result column="SEND_RES" jdbcType="varchar" javaType="java.lang.String" property="sendRes" />
+    <result column="ORDER_FROM" jdbcType="int" javaType="java.lang.Integer" property="orderFrom" />
+  </resultMap>
+  
+  <insert id="addBadQueue" parameterClass="SendLogTO">
+    insert into BAD_QUEUE (ORDER_ID, POST_URL, PARAMS, SEND_RES, CREATED_DATE, ORDER_FROM) 
+    values(#orderId#, #postUrl#, #params#, #sendRes#, now(), #orderFrom#)
+  </insert>
+</sqlMap>
