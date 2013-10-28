@@ -22,7 +22,7 @@ public interface OrderMapper {
      * @return
      * @throws BillingException
      */
-    public boolean updateOrder(Order order) throws BillingException;
+    public int updateOrder(Order order) throws BillingException;
 
     /**
      * 根据id号查询第三方平台订单

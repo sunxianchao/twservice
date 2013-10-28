@@ -32,16 +32,16 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public boolean updateOrderAndSendQueue(Order order) throws BillingException {
-        boolean isSuccess=orderMapper.updateOrder(order);
-        if(isSuccess){
+        int isSuccess=orderMapper.updateOrder(order);
+        if(isSuccess>0){
             sendService.createSendQueue(1, String.valueOf(order.getId()));
         }
-        return isSuccess;
+        return isSuccess>0;
     }
     
     public boolean updateOrder(Order order) throws BillingException {
-        boolean isSuccess=orderMapper.updateOrder(order);
-        return isSuccess;
+        int isSuccess=orderMapper.updateOrder(order);
+        return isSuccess>0;
     }
     
 

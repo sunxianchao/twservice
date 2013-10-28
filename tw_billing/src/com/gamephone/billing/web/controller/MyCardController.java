@@ -28,7 +28,8 @@ public class MyCardController {
 
     private static final Logger logger=Logger.getLogger(MyCardController.class);
     
-
+    private static final String mycardSecretKey="Pgdw5513";
+    
     @Resource
     private OrderService orderService;
     
@@ -47,11 +48,15 @@ public class MyCardController {
             HashMap<String, String> dataMap=JsonUtil.Json2Object(data, new TypeReference<HashMap<String, String>>() {
             });
             String cpOrderId=dataMap.get("CP_TxID");
-            StringBuilder basestring=new StringBuilder(SystemProperties.getProperty("mycard.secretkey"));
+            StringBuilder basestring=new StringBuilder(mycardSecretKey);
             basestring.append(cpOrderId).append(dataMap.get("Account")).append(dataMap.get("Amount")).append(dataMap.get("Realm_ID")).append(dataMap.get("Character_ID"));
+            logger.info(basestring.toString());
             String sign=MessageDigestUtil.getSHA1(basestring.toString());
+            logger.info(sign);
             if(sign.equalsIgnoreCase(dataMap.get("SecurityKey"))){
+                logger.info("sign success");
                 Order order=orderService.getOrderByOrderId(cpOrderId);
+                logger.info("cpOrderId"+cpOrderId);
                 if(order != null){
                     writer.write("{\"ResultCode\":1}");
                 }else{
@@ -80,7 +85,7 @@ public class MyCardController {
         try {
             writer=response.getWriter();
             String data=RequestUtil.getString(request, "DATA");
-            logger.info("revice bridge data:"+data);
+            logger.info("bridge bridge data:"+data);
             HashMap<String, String> dataMap=JsonUtil.Json2Object(data, new TypeReference<HashMap<String, String>>() {
             });
             String cpOrderId=dataMap.get("CP_TxID");
@@ -93,7 +98,7 @@ public class MyCardController {
             final String AUTH_CODE=dataMap.get("AUTH_CODE");
             String MyCardProjectNo=dataMap.get("MyCardProjectNo");
             String MyCardType=dataMap.get("MyCardType");
-            StringBuilder basestring=new StringBuilder(SystemProperties.getProperty("mycard.secretkey"));
+            StringBuilder basestring=new StringBuilder(mycardSecretKey);
             basestring.append(cpOrderId).append(MG_TxID).append(Account).append(Amount).append(Realm_ID)
                       .append(Character_ID).append(Tx_Time).append(AUTH_CODE).append(MyCardProjectNo).append(MyCardType);
             String sign=MessageDigestUtil.getSHA1(basestring.toString());
@@ -104,18 +109,19 @@ public class MyCardController {
                     order.setAmount(Integer.valueOf(Amount) * 100);
                     order.setPaySuccess(1);
                     order.setResultCode("1");
-                    order.setResultMsg(String.format("%s_%s_%s", AUTH_CODE, MyCardProjectNo, MyCardType));
+                    order.setAuthCode(AUTH_CODE);
+                    order.setProNo(MyCardProjectNo);
                     orderService.updateOrderAndSendQueue(order);
                     final Map<String, String> resultMap=new HashMap<String, String>();
                     resultMap.put("CP_TxID", order.getOrderId());
                     resultMap.put("AUTH_CODE", AUTH_CODE);
                     resultMap.put("MG_TxID", order.getTradeNo());
                     resultMap.put("ResultCode", order.getResultCode());
-                    resultMap.put("Description", SystemProperties.getProperty("order.complate"));
+                    resultMap.put("Description", "交易完成");
                     writer.write(JsonUtil.Object2Json(resultMap));
                     //step4
                     resultMap.clear();
-                    String securityKey=SystemProperties.getProperty("mycard.secretkey")+AUTH_CODE+MG_TxID+Account;
+                    String securityKey=mycardSecretKey+AUTH_CODE+MG_TxID+Account;
                     securityKey=MessageDigestUtil.getSHA1(securityKey);
                     resultMap.put("AUTH_CODE", AUTH_CODE);
                     resultMap.put("MG_TxID", order.getTradeNo());

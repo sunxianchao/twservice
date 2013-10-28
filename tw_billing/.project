@@ -36,9 +36,9 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>commonsrc</name>
+			<name>tw.commonsrc</name>
 			<type>2</type>
-			<location>E:/workspace/tw.common/src</location>
+			<location>E:/workspace/twservice/tw.common/src</location>
 		</link>
 	</linkedResources>
 </projectDescription>
