@@ -9,6 +9,8 @@ public class OnlineUser {
 
     private Integer userId;
     
+    private Integer tid;
+    
     private Integer userGameId;
 
     private String loginAccount;
@@ -109,5 +111,17 @@ public class OnlineUser {
         this.userGameId=userGameId;
     }
 
+
+    
+    public Integer getTid() {
+        return tid;
+    }
+
+    
+    public void setTid(Integer tid) {
+        this.tid=tid;
+    }
+
+    
 
 }

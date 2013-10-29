@@ -190,6 +190,7 @@ public class UserController implements Constants{
         OnlineUser onlineUser=userService.login(user, ip);
         Result<OnlineUser> result=new Result<OnlineUser>();
         if(onlineUser != null){
+            onlineUser.setTid(Integer.parseInt(tid));
             request.setAttribute("onlineUser", onlineUser);
             result.setBusinessResult(onlineUser);
             result.setSuccess(true);
