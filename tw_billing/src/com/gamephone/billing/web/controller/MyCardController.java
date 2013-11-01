@@ -112,6 +112,7 @@ public class MyCardController {
                     order.setAuthCode(AUTH_CODE);
                     order.setProNo(MyCardProjectNo);
                     orderService.updateOrderAndSendQueue(order);
+                    HTTPUtil.httpPost(SystemProperties.getProperty("mycard.receive.url")+SystemProperties.getProperty("user.payment.info.url"), "amount="+order.getAmount()+"&userId="+order.getUserId(), "utf-8");
                     final Map<String, String> resultMap=new HashMap<String, String>();
                     resultMap.put("CP_TxID", order.getOrderId());
                     resultMap.put("AUTH_CODE", AUTH_CODE);

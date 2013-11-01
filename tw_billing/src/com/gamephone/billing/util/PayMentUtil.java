@@ -78,7 +78,6 @@ public class PayMentUtil {
         System.out.println(a);
     }
 
-    
     // 得到xml字符串节点内容
     public static String getXmlValue(String xml, String name) {
         if(StringUtils.isBlank(xml) || StringUtils.isBlank(name)) {

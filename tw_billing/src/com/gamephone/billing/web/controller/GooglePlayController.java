@@ -17,6 +17,7 @@ import com.gamephone.billing.service.OrderService;
 import com.gamephone.billing.util.GooglePlaySecurity;
 import com.gamephone.common.context.SystemProperties;
 import com.gamephone.common.to.Result;
+import com.gamephone.common.util.HTTPUtil;
 import com.gamephone.common.util.RequestUtil;
 
 
@@ -70,6 +71,7 @@ public class GooglePlayController {
             orderService.updateOrderAndSendQueue(order);
             res.setSuccess(true);
             res.setBusinessResult(order.getOrderId());
+            HTTPUtil.httpPost(SystemProperties.getProperty("mycard.receive.url")+SystemProperties.getProperty("user.payment.info.url"), "amount="+order.getAmount()+"&userId="+order.getUserId(), "utf-8");
         } else {
             throw new BillingException("未知订单");
         }

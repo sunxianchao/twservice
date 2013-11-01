@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.gamephone.acs.exception.AcsException;
 import com.gamephone.acs.model.UserGames;
-import com.gamephone.common.to.GameTO;
 
 
 public interface UserGameService {
@@ -20,5 +19,7 @@ public interface UserGameService {
     public List<UserGames> getGamesByUserId(Integer userId) throws AcsException;
     
     public UserGames getUserLoginGame(Integer userId, Integer gameId, Integer serverId) throws AcsException;
+    
+    public UserGames getCurrentUserGamesByUserId(Integer userId) throws AcsException;
     
 }

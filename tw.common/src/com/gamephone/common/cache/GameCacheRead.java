@@ -9,6 +9,8 @@ import com.gamephone.common.util.JsonUtil;
 public class GameCacheRead extends CommonAcsCache{
 
     public static final String PREFIX_REDIS_GAME_KEY = "game:id:";
+    
+    public static final String PREFIX_REDIS_USER_GAME_USERID_KEY = "acs:user.game:userid:";
 
     public GameTO getGameById(Integer id) {
         String key=PREFIX_REDIS_GAME_KEY;
@@ -23,4 +25,5 @@ public class GameCacheRead extends CommonAcsCache{
         }
         return game;
     }
+    
 }

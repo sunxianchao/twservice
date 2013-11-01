@@ -102,4 +102,16 @@ public class UserGameController implements Constants{
         onlineUser.setServerId(serverId);
         serverService.loginServer(role, log, userGame, onlineUser);
     }
+    
+    @RequestMapping("/remote/game/userpaymentinfo")
+    public void updateUserPaymentInfo(HttpServletRequest request, HttpServletResponse response) throws AcsException{
+        Integer amount=RequestUtil.getInteger(request, "amount");
+        Integer userId=RequestUtil.getInteger(request, "userId");
+        UserGames userGame=userGameService.getCurrentUserGamesByUserId(userId);
+        if(userGame != null){
+            userGame.setAmount(amount);
+            logger.info("userid:"+userId+"userGame="+userGame.getId());
+            userGameService.updateUserGameById(userGame);
+        }
+    }
 }

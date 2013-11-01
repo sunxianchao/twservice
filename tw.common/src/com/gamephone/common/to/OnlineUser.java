@@ -9,7 +9,7 @@ public class OnlineUser {
 
     private Integer userId;
     
-    private Integer tid;
+    private String tid;
     
     private Integer userGameId;
 
@@ -113,12 +113,12 @@ public class OnlineUser {
 
 
     
-    public Integer getTid() {
+    public String getTid() {
         return tid;
     }
 
     
-    public void setTid(Integer tid) {
+    public void setTid(String tid) {
         this.tid=tid;
     }
 

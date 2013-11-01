@@ -44,6 +44,11 @@ public class UserGameServiceImpl implements UserGameService{
     }
 
     @Override
+    public UserGames getCurrentUserGamesByUserId(Integer userId) throws AcsException{
+        return userGameCache.getUserGamesByUserId(userId);
+    }
+    
+    @Override
     public UserGames getUserLoginGame(Integer userId, Integer gameId, Integer serverId)  throws AcsException{
         return userGamesMapper.getUserLoginGame(userId, gameId, serverId);
     }

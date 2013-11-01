@@ -39,6 +39,12 @@
    <!-- end -->
    
 	<mvc:annotation-driven />
+	<mvc:interceptors>  
+	    <mvc:interceptor>  
+	      <mvc:mapping path="/remote/**" />  
+	      <bean id="metaInfoInterceptor" class="com.gamephone.acs.web.interceptor.RemoteAccessInterceptor"/>  
+	    </mvc:interceptor> 
+ </mvc:interceptors> 
 
   <context:component-scan base-package="com.gamephone.acs.*"  use-default-filters="false">
      <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />

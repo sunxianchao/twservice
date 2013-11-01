@@ -1,5 +1,6 @@
 package com.gamephone.acs.service.impl;
 
+import java.util.Date;
 import java.util.concurrent.TimeoutException;
 
 import org.apache.log4j.Logger;
@@ -77,6 +78,8 @@ public class ServerServiceImpl implements ServerService {
         }
         log.setGameRoleId(gr.getId());
         userGame.setGameRoleId(gr.getId());
+        userGame.setLastLoginDate(new Date());
+        userGame.setUserId(onlineUser.getUserId());
         try {
             userGameService.updateUserGameById(userGame);
             onlineUserCache.writeOnlineUser(onlineUser);
