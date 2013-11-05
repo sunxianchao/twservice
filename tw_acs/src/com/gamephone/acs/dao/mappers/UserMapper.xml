@@ -32,7 +32,7 @@
 	</select>
 	
 	<select id="getThirdUser" resultType="User" resultMap="userResultMap">
-		select * from USER u where USER_TYPE=#{userType} and TID=#{tid}
+		select * from USER u where TID=#{tid} and USER_TYPE=#{userType} 
 	</select>
 	
 	<select id="checkLogin" parameterType="java.util.Map" resultType="User" resultMap="userResultMap">
