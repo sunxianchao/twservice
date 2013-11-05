@@ -148,7 +148,7 @@ public class UserController implements Constants{
         user=new User();
         String passwordSalt=SystemProperties.getProperty("phonegame.pwd.salt")+password.toLowerCase().trim();
         user.setUserName(account);
-        user.setTid(tid);
+        user.setTid("0");
         user.setEmail(email);
         user.setChannelId(promptChannelId);
         user.setRegisterGameId(gameId);
@@ -180,6 +180,9 @@ public class UserController implements Constants{
         User user=userService.getThirdUser(userType, tid);
         if(user == null){
             user=new User();
+            String passwordSalt=SystemProperties.getProperty("phonegame.pwd.salt")+"".toLowerCase().trim();
+            user.setUserName("");
+            user.setPassword(MessageDigestUtil.getMD5(passwordSalt));
             user.setTid(tid);
             user.setUserType(userType);
             user.setChannelId(promptChannelId);
