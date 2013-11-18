@@ -11,6 +11,8 @@ public class OnlineUser {
     
     private String tid;
     
+    private int userType;
+    
     private Integer userGameId;
 
     private String loginAccount;
@@ -24,6 +26,15 @@ public class OnlineUser {
     private Date lastActDate;
 
     
+    public int getUserType() {
+        return userType;
+    }
+    
+    public void setUserType(int userType) {
+        this.userType=userType;
+    }
+
+
     public String getToken() {
         return token;
     }

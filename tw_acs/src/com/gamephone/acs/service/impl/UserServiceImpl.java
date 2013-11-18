@@ -102,6 +102,7 @@ public class UserServiceImpl implements UserService {
             Date currentTime=new Date();
             OnlineUser onlineUser = new OnlineUser();
             onlineUser.setToken(token);
+            onlineUser.setUserType(user.getUserType());
             onlineUser.setUserId(user.getId());
             onlineUser.setGameId(usergame.getGameId());
             onlineUser.setLoginDate(currentTime);

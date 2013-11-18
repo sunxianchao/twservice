@@ -110,7 +110,7 @@ public class UserGameController implements Constants{
         UserGames userGame=userGameService.getCurrentUserGamesByUserId(userId);
         if(userGame != null){
             userGame.setAmount(amount);
-            logger.info("userid:"+userId+"userGame="+userGame.getId());
+            logger.info("userid:"+userId+"\tuserGame="+userGame.getId());
             userGameService.updateUserGameById(userGame);
         }
     }

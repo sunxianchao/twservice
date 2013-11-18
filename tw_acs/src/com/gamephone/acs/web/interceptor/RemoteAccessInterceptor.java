@@ -15,9 +15,10 @@ public class RemoteAccessInterceptor extends HandlerInterceptorAdapter {
     
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String url=request.getRequestURL().toString();
-        logger.info(url);
         String requestIp=RequestUtil.getUserIpAddr(request);
+        logger.info("remote ip:"+requestIp+"\turl:"+url);
         if(requestIp.indexOf("127.0.0.1")<0){
+            logger.info("forbiden access");
             return false;
         }
         return true;

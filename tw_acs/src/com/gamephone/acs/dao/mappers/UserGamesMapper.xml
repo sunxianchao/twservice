@@ -72,7 +72,7 @@
 		u.LAST_LOGIN_DATE=#{lastLoginDate}, u.LOGIN_CNT=LOGIN_CNT+1,
 	</if>
 	<if test="amount != null and amount != 0">
-		u.amount=#{amount}, u.PAY_TOTAL_AMOUNT=PAY_TOTAL_AMOUN+ #{amount}, and PAY_CNT=PAY_CNT+1,
+		u.LAST_PAY_AMOUNT=#{amount}, u.PAY_TOTAL_AMOUNT=u.PAY_TOTAL_AMOUNT+ #{amount}, PAY_CNT=PAY_CNT+1,
 	</if>
 	u.ID=#{id} where u.ID=#{id}
 	</update>

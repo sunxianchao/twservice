@@ -12,7 +12,6 @@ import org.apache.log4j.Logger;
 import org.codehaus.jackson.type.TypeReference;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.gamephone.billing.exception.BillingException;
 import com.gamephone.billing.model.Order;
@@ -38,7 +37,7 @@ public class MyCardController {
      * @param request
      * @param response
      */
-    @RequestMapping(value="/common/mycard/iseligible", method=RequestMethod.POST)
+    @RequestMapping(value="/common/mycard/iseligible")
     public void mycardIsEligible(HttpServletRequest request, HttpServletResponse response) {
         PrintWriter writer=null;
         try {
@@ -56,7 +55,7 @@ public class MyCardController {
             if(sign.equalsIgnoreCase(dataMap.get("SecurityKey"))){
                 logger.info("sign success");
                 Order order=orderService.getOrderByOrderId(cpOrderId);
-                logger.info("cpOrderId"+cpOrderId);
+                logger.info("cpOrderId:"+cpOrderId);
                 if(order != null){
                     writer.write("{\"ResultCode\":1}");
                 }else{
@@ -79,10 +78,10 @@ public class MyCardController {
      * @param request
      * @param response
      */
-    @RequestMapping(value="/common/mycard/bridge", method=RequestMethod.POST)
+    @RequestMapping(value="/common/mycard/bridge")
     public void mycardBridge(HttpServletRequest request, HttpServletResponse response) {
         PrintWriter writer=null;
-        try {
+        try {System.out.println(SystemProperties.getProperty("mycard.receive.url"));
             writer=response.getWriter();
             String data=RequestUtil.getString(request, "DATA");
             logger.info("bridge bridge data:"+data);
@@ -112,7 +111,7 @@ public class MyCardController {
                     order.setAuthCode(AUTH_CODE);
                     order.setProNo(MyCardProjectNo);
                     orderService.updateOrderAndSendQueue(order);
-                    HTTPUtil.httpPost(SystemProperties.getProperty("mycard.receive.url")+SystemProperties.getProperty("user.payment.info.url"), "amount="+order.getAmount()+"&userId="+order.getUserId(), "utf-8");
+                    HTTPUtil.httpPost(SystemProperties.getProperty("remote.acs.domain")+SystemProperties.getProperty("user.payment.info.url"), "amount="+order.getAmount()+"&userId="+order.getUserId(), "utf-8");
                     final Map<String, String> resultMap=new HashMap<String, String>();
                     resultMap.put("CP_TxID", order.getOrderId());
                     resultMap.put("AUTH_CODE", AUTH_CODE);

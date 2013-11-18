@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.gamephone.billing.exception.BillingException;
 import com.gamephone.billing.model.Order;
@@ -30,12 +31,12 @@ public class GooglePlayController {
     private OrderService orderService;
     
     @RequestMapping("/service/order/googlebillingupdate")
-    public Result<String> updateOrder(HttpServletRequest request, HttpServletResponse response) throws BillingException,
+    public @ResponseBody Result<String> updateOrder(HttpServletRequest request, HttpServletResponse response) throws BillingException,
         IOException {
-        Integer orderid=RequestUtil.getInteger(request, "orderid");
+        String orderid=RequestUtil.getString(request, "orderid");
         String tradeNO=RequestUtil.getString(request, "tradeno");
         Integer status=RequestUtil.getInteger(request, "status");
-        String uid=RequestUtil.getString(request, "uid");
+//        String uid=RequestUtil.getString(request, "uid");
         String productId=RequestUtil.getString(request, "productid");
         String signedData=RequestUtil.getString(request, "signeddata");
         String signature=RequestUtil.getString(request, "signature");
@@ -43,9 +44,9 @@ public class GooglePlayController {
         if(StringUtils.isBlank(amountString)){
             throw new BillingException("未识别的产品id："+productId);
         }
-        logger.info("googlebilling_productId:"+productId+"\torderi d:"+orderid+"\tstatus:"+status);
+        logger.info("googlebilling_productId:"+productId+"\torderid:"+orderid+"\tstatus:"+status);
         int amount=Integer.valueOf(amountString);
-        Order order=orderService.getOrderById(orderid);
+        Order order=orderService.getOrderByOrderId(orderid);
         Result<String> res=new Result<String>();
         if(order != null) {
             String encodedPublicKey=SystemProperties.getProperty("google.public.key.gameid"+order.getGameId());
@@ -55,10 +56,10 @@ public class GooglePlayController {
                 logger.info("google verify error signedData:"+signedData+"\tsignature:"+signature);
                 throw new BillingException("google verify error");
             }
-            logger.info("request userId:"+uid+"\torderid:"+order.getId()+"\tuserid:"+order.getUserId()+"\tradeNO:"+tradeNO);
-            if(uid ==null || !uid.equals(order.getUserId())){
-                throw new BillingException("非法用户："+uid);
-            }
+            logger.info("orderid:"+order.getId()+"\tuserid:"+order.getUserId()+"\tradeNO:"+tradeNO);
+//            if(uid ==null || !uid.equals(order.getUserId())){
+//                throw new BillingException("非法用户："+uid);
+//            }
             order.setAmount(amount * 100);
             order.setTradeNo(tradeNO);
             String msg=Integer.valueOf(status) == 0 ? "完成交易" : "交易失敗";
@@ -71,7 +72,9 @@ public class GooglePlayController {
             orderService.updateOrderAndSendQueue(order);
             res.setSuccess(true);
             res.setBusinessResult(order.getOrderId());
-            HTTPUtil.httpPost(SystemProperties.getProperty("mycard.receive.url")+SystemProperties.getProperty("user.payment.info.url"), "amount="+order.getAmount()+"&userId="+order.getUserId(), "utf-8");
+            String params="amount="+order.getAmount()+"&userId="+order.getUserId();
+            System.out.println(params);
+            HTTPUtil.httpPost(SystemProperties.getProperty("remote.acs.domain")+SystemProperties.getProperty("user.payment.info.url"), params, "utf-8");
         } else {
             throw new BillingException("未知订单");
         }
