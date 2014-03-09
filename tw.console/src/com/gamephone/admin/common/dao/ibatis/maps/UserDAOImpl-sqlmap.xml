@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="USER" >
+  
+  	<resultMap class="UserMapper" id="UserMapper">
+		<result column="ID" jdbcType="int" javaType="java.lang.Integer" property="id" />
+		<result property="tid" column="TID" />
+		<result property="userName" column="USER_NAME" />
+		<result property="email" column="EMAIL" />
+		<result property="realName" column="REAL_NAME" />
+		<result property="userType" jdbcType="int" javaType="java.lang.Integer" column="USER_TYPE" />
+		<result property="signUpDate" jdbcType="datetime" javaType="java.util.Date" column="SIGN_UP_DATE" />
+	</resultMap>
+  
+  <sql id="select-from-user">
+    select ID, TID, USER_NAME, EMAIL, REAL_NAME,USER_TYPE,SIGN_UP_DATE  from USER
+  </sql>
+   
+  <sql id="where-from-user">
+    <dynamic prepend="where">
+	    <isNotNull prepend=" and " property="id">ID = #id#</isNotNull>
+	    <isNotNull prepend=" and " property="tid">TID = #tid#</isNotNull>
+	    <isNotEmpty prepend=" and " property="email">EMAIL like '%$email$%'</isNotEmpty>
+	    <isNotEmpty prepend=" and " property="userName">USER_NAME = #userName#</isNotEmpty>
+    </dynamic>
+  </sql>
+  
+   
+  <select id="getUsers" resultMap="UserMapper" parameterClass="UserCriteriaTO">
+    <include refid="select-from-user" />
+    <include refid="where-from-user" />
+    order by ID DESC
+    limit #pageModel.offset#, #pageModel.pageSize#
+  </select>
+    
+  <select id="getUsersCount" resultClass="java.lang.Integer" parameterClass="UserCriteriaTO">
+    select count(*) from USER
+    <include refid="where-from-user" />
+  </select>
+  
+</sqlMap>

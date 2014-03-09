@@ -3,7 +3,7 @@
   <description>yun common</description>
   <property environment="env"/>
   <property name="jdk.home" value="${env.JAVA_HOME}"/>
-  <property name="tomcat.home" value="${env.CATALINA_HOME}"/>
+  <property name="tomcat.home" value="/usr/local/apache-tomcat-6.0.13"/>
   <property name="dest" value="dist" />
   <property name="src" value="src"/>
   <property name="bin" value="bin"/>

@@ -17,6 +17,7 @@ import com.gamephone.billing.exception.BillingException;
 import com.gamephone.billing.model.Order;
 import com.gamephone.billing.service.OrderService;
 import com.gamephone.common.context.SystemProperties;
+import com.gamephone.common.type.PayTyper;
 import com.gamephone.common.util.HTTPUtil;
 import com.gamephone.common.util.JsonUtil;
 import com.gamephone.common.util.MessageDigestUtil;
@@ -81,7 +82,7 @@ public class MyCardController {
     @RequestMapping(value="/common/mycard/bridge")
     public void mycardBridge(HttpServletRequest request, HttpServletResponse response) {
         PrintWriter writer=null;
-        try {System.out.println(SystemProperties.getProperty("mycard.receive.url"));
+        try {
             writer=response.getWriter();
             String data=RequestUtil.getString(request, "DATA");
             logger.info("bridge bridge data:"+data);
@@ -110,6 +111,11 @@ public class MyCardController {
                     order.setResultCode("1");
                     order.setAuthCode(AUTH_CODE);
                     order.setProNo(MyCardProjectNo);
+                    if(MG_TxID.startsWith("MP")){
+                        order.setType(PayTyper.MYCARD_MOBIL_INGAME.getId());
+                    }else if(MG_TxID.startsWith("MB")){
+                        order.setType(PayTyper.MYCARD_MOBIL_BILLING.getId());
+                    }
                     orderService.updateOrderAndSendQueue(order);
                     HTTPUtil.httpPost(SystemProperties.getProperty("remote.acs.domain")+SystemProperties.getProperty("user.payment.info.url"), "amount="+order.getAmount()+"&userId="+order.getUserId(), "utf-8");
                     final Map<String, String> resultMap=new HashMap<String, String>();

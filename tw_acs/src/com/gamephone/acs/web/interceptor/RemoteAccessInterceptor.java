@@ -17,7 +17,7 @@ public class RemoteAccessInterceptor extends HandlerInterceptorAdapter {
         String url=request.getRequestURL().toString();
         String requestIp=RequestUtil.getUserIpAddr(request);
         logger.info("remote ip:"+requestIp+"\turl:"+url);
-        if(requestIp.indexOf("127.0.0.1")<0){
+        if(requestIp.indexOf("10.100.10.59")<0){
             logger.info("forbiden access");
             return false;
         }

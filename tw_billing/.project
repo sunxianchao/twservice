@@ -36,9 +36,14 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>common_src</name>
+			<type>2</type>
+			<location>/Volumes/HDD/workspace/twservice/tw.common/src</location>
+		</link>
+		<link>
 			<name>tw.commonsrc</name>
 			<type>2</type>
-			<location>E:/workspace/twservice/tw.common/src</location>
+			<location>/SoftWare/eclipse/Eclipse.app/Contents/MacOS/E::/workspace/twservice/tw.common/src</location>
 		</link>
 	</linkedResources>
 </projectDescription>

@@ -34,16 +34,4 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.eclipse.wst.jsdt.core.jsNature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>commonsrc</name>
-			<type>2</type>
-			<location>E:/workspace/tw.common/src</location>
-		</link>
-		<link>
-			<name>tw.common</name>
-			<type>2</type>
-			<location>E:/workspace/twservice/tw.common/src</location>
-		</link>
-	</linkedResources>
 </projectDescription>

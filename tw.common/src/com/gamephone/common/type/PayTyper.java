@@ -2,7 +2,7 @@ package com.gamephone.common.type;
 
 
 public enum PayTyper implements EnumTyper{
-    INGAME(1, "ingame"), BILLING(2, "billing"), GOOGLE(3, "google");
+    INGAME(1, "ingame"), BILLING(2, "billing"), GOOGLE(3, "google"), MYCARD_MOBIL_INGAME(4, "sdk_ingame"), MYCARD_MOBIL_BILLING(5, "sdk_billing");
 
     private Integer id;
 

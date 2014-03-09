@@ -53,8 +53,13 @@ public class GooglePlayController {
             logger.info("publickey:"+encodedPublicKey);
             boolean isVerify=GooglePlaySecurity.verify(encodedPublicKey, signedData, signature);
             if(!isVerify){
-                logger.info("google verify error signedData:"+signedData+"\tsignature:"+signature);
-                throw new BillingException("google verify error");
+                logger.info("new google verify error signedData:"+signedData+"\tsignature:"+signature);
+                encodedPublicKey=SystemProperties.getProperty("google.public.key.gameid"+order.getGameId()+".old");
+                isVerify=GooglePlaySecurity.verify(encodedPublicKey, signedData, signature);
+                if(!isVerify){
+                	logger.info("old google verify error signedData:"+signedData+"\tsignature:"+signature);
+                		throw new BillingException("google verify error");
+                }
             }
             logger.info("orderid:"+order.getId()+"\tuserid:"+order.getUserId()+"\tradeNO:"+tradeNO);
 //            if(uid ==null || !uid.equals(order.getUserId())){
@@ -81,10 +86,10 @@ public class GooglePlayController {
         return res;
     }
     
-    public static void main(String[] args) {
-        String encodedPublicKey="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzgHFT8LcwdPPOKxhtRzwfGUf7MIyDIMHmPgK+imIzHDr4lefXDuefrTEQnjmn0tkMZiZ6jPeri7ShvaFA7LseIDHKI9ghNZA3Bh1+GA0fWvTBhHkPJUqhwmPBm861t0NlBQDyl0IwT7weiCb0tYx6gZl952t64j9yDBjScA4A6oyp3YusVKuAoq3K712+cBTeaZlj6LuddXIEXsivB2hXk2XU6R0PCJ8u0/eSX8dOe3HcKYRUbDY6lI9MWDPnw+IugtXJdnYozRXxfMh/exq854U9GLuAKZLXfIMdP91U75m1NAAhgTifF/Z0+kAxk3ZjX8yEdKn429SwKp9pIckPQIDAQAB";
-        String signdata="{\"orderId\":\"12999763169054705758.1379061891092812\",\"packageName\":\"com.tuomi.happysanguoandroid_tw\",\"productId\":\"com.phonegame.dw3.gpay_f.01\",\"purchaseTime\":1369725198000,\"purchaseState\":0,\"developerPayload\":\"com.phonegame.dw3\",\"purchaseToken\":\"qqwpirxvdyqjsfbhakziatuk.AO-J1Owwx6sJ7GvGHJ8x203n7_31LWo4MbdAdjhD3mYpcRcd-bXxaO1BB9L08aQIqmcJjCGK9ju6lHkmsIhLvL_xlCCgkhtMjjTPvTFxk0iND54xDAr5bCNJK-LnZ_ra1mG57Oum3G-5MfD9A2lWuZCLhW998GKz5Q\"}";
-        String sign="hcGpNx2R/Fs2HeN7/GHccMsUxP7PHKEvLe08YFoAHV4MQ4Fjp865SkyTPA3qWBtYIBirAXut0GJQyVmngzIXqgd17uC/SgHO6pkpPH7FZ2BJAFSCBfQS8OljbNayumFPMt81rb8Sr+gXitubE2ENoLr+qqOw3HRyJV/hGIWDCe9pSl4ZZdSBVOlwIaRHjKydcjH1bZC73jFkJYAnoVGBmIVZJ5KK2f9joZL1FOVM7CQsCtPnDRBrEq7QJbK3PHb23Xr0/bm74rJLnCjjctNKQXglKZlzWWFzEuU53Eg2B/Tzgs2OTW7PJPcNhc0xFnf1jD+/Hyg3TSdtuoxOldBVlA==";
+    public static void main(String[] args) { 
+        String encodedPublicKey="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj2Fw/czb5t1zR3A1T6iLw76sGKLTC+8FpeH0yGaejH3ctpOvUqIws7YHkss7gvr3XnY7TyiVA51V4sZtLTRTuwhja2VQ/zqjuUJRKJBjSahXqrj0txvoqd/nN7yWvTfzKwk8uFXebFC7wbzjd+B2t3sA/wa+jGzeQsttap61Q2NybE9sNWVpjF656W2IltzfCn8NDFOmZ5gJhq3M75UCuJ/uEXk9Cl84kJQ7T83abeFhoItbor9HeD9ZsQApi2r4zG/lOI0aANByHsUEqzCOYIJhg9YOEaUJbqve8r4uCJ9K+cQ0RYB0xYUgYKp1Z+3tMwso0ztasAxIgia6thhIAwIDAQAB";
+        String signdata="{\"orderId\":\"12999763169054705758.1394840302107456\",\"packageName\":\"com.tuomi.happysanguoandroid\",\"productId\":\"com.phonegame.dw3.gpay_f.06\",\"purchaseTime\":1389901732225,\"purchaseState\":0,\"developerPayload\":\"com.phonegame\",\"purchaseToken\":\"lwvfubxndxzeyrmbkhbdxdqo.AO-J1Owa5eNNFbokR2B_3V9xIN10PcTtVsiVpcLVlNSjI-BqB_L8TLBCJDwSCRph_RZg0OBPAf7T26ZhdLcFV3Mi1PyfphZiN6hPvA2F67NiV9ybqNRsFeeSvwA1HaOOc2ytn_FIGBK-YJSqDGGVJ1FA83MwWj-2mg\"}";
+        String sign="iN3RO1l9YGxZC5LeEXsz4fC61qiZTRbsCw1ezkW6q7QRxbjIh09FwhNahhFefBBLgr4cfGcASmGzsxCnHwd2155GIgqf4wY34FaALtEafFd93gNgRsvenIsnwIwlC6c6g6snppcn0YCQVpiERASHFtP4jAxTuqhjZMm7vsJMzlqwtA6MQ9QkdPp5hZH/eIS1L0QHSlCiFH/0ranyJhgIkE2VwU+FBMrRRqJEiEuWczyADnPonByF6iHLLm6RufIr607nZoRnKdJiS9PuAmms5m2AyG1QtFSPiY65TC4J+kUm/uhD3nndrlWnedYCHwQUl8hAB3HHZCRE7gp0zDD+QA==";
         boolean status=GooglePlaySecurity.verify(encodedPublicKey, signdata, sign);
         System.out.println(status);
     }

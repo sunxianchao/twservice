@@ -18,6 +18,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.gamephone.admin.common.Constants;
 import com.gamephone.admin.common.criteria.AdminUserSearchCriteriaTO;
+import com.gamephone.admin.common.criteria.UserCriteriaTO;
+import com.gamephone.admin.common.dao.UserDAO;
 import com.gamephone.admin.common.exception.AdminException;
 import com.gamephone.admin.common.service.AdminUserService;
 import com.gamephone.admin.common.service.GameService;
@@ -26,6 +28,7 @@ import com.gamephone.admin.common.util.DwzJsonUtil;
 import com.gamephone.admin.common.web.Funcs;
 import com.gamephone.common.criteria.SearchPagerModel;
 import com.gamephone.common.to.GameTO;
+import com.gamephone.common.to.User;
 import com.gamephone.common.type.StatusType;
 import com.gamephone.common.type.YesNoType;
 import com.gamephone.common.util.MessageDigestUtil;
@@ -45,12 +48,37 @@ public class UsersController implements Constants {
     @Autowired
     private GameService gameService;
     
+    @Autowired
+    private UserDAO userDAO;
+    
     public static final String USERS_LIST="/modules/system/user_list.jsp";
 
     public static final String ADD_USER="/modules/system/user_add.jsp";
 
     public static final String UPDATE_USER="/modules/system/user_update.jsp";
+    
+    public static final String MEMBER_LIST="/modules/system/members.jsp";
 
+    @RequestMapping(params="act=member")
+    public ModelAndView memberList(HttpServletRequest request, HttpServletResponse response) throws AdminException {
+
+        Integer id=RequestUtil.getInteger(request, "id");
+        String username=RequestUtil.getString(request, "username");
+        String email=RequestUtil.getString(request, "email");
+        Integer pageNum=RequestUtil.getInteger(request, "pageNum");
+        
+        UserCriteriaTO criteriaTO=new UserCriteriaTO();
+        SearchPagerModel<User> searchPagerModel=new SearchPagerModel<User>(null == pageNum ? 1 : pageNum, Constants.PAGESIZE);
+        criteriaTO.setPageModel(searchPagerModel);
+        criteriaTO.setId(id);
+        criteriaTO.setEmail(email);
+        criteriaTO.setUserName(username);
+        
+        searchPagerModel=userDAO.getUsers(criteriaTO);
+        request.setAttribute("members", searchPagerModel);
+        return new ModelAndView(MEMBER_LIST);
+    }
+    
     /**
      * 用户详情列表
      * @param request

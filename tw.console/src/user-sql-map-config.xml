@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+  <settings useStatementNamespaces="true"/>
+  
+  <typeAlias alias="StatusType" type="com.gamephone.common.type.StatusType" />
+  <typeAlias alias="YesNoType" type="com.gamephone.common.type.YesNoType" />
+  <typeAlias alias="PayTyper" type="com.gamephone.common.type.PayTyper" />
+  <typeAlias alias="UserMapper" type="com.gamephone.common.to.User"/>
+  <typeAlias alias="UserCriteriaTO" type="com.gamephone.admin.common.criteria.UserCriteriaTO"/>
+  
+  <typeHandler javaType="StatusType" callback="com.gamephone.admin.common.dao.ibatis.typehandler.StatusTypeHandler" />
+  <typeHandler javaType="YesNoType" callback="com.gamephone.admin.common.dao.ibatis.typehandler.YesNoTypeHandler" />
+  <typeHandler javaType="PayTyper" callback="com.gamephone.admin.common.dao.ibatis.typehandler.PayTypeHandler" />
+
+  <sqlMap resource="com/gamephone/admin/common/dao/ibatis/maps/UserDAOImpl-sqlmap.xml" />
+  
+</sqlMapConfig>

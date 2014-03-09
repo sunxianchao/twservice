@@ -6,8 +6,8 @@
   <property name="src" value="src"/>
   <property name="web" value="WebContent"/>
   <property name="jdk.home" value="${env.JAVA_HOME}"/>
-  <property name="tomcat.home" value="${env.CATALINA_HOME}"/>  
-  <property name="tw.home" value="${env.TW.COMMON_HOME}"/>
+  <property name="tomcat.home" value="/usr/local/apache-tomcat-6.0.13"/>  
+  <property name="tw.home" value="/HDD/workspace/twservice/tw.common"/>
 
 <path id="project.class.path">
 	<fileset dir="${java.home}">

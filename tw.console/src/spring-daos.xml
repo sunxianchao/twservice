@@ -32,4 +32,8 @@
     <bean id="payChannelDAO" class="com.gamephone.admin.common.dao.ibatis.PayChannelDAOImpl">
       <property name="sqlMapClient" ref="sqlMapClient" />
     </bean>
+    
+    <bean id="userDAO" class="com.gamephone.admin.common.dao.ibatis.UserDAOImpl">
+      <property name="sqlMapClient" ref="userSqlMapClient" />
+    </bean>
 </beans>
